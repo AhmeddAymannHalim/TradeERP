@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using TradeERP.PL.Models;
+using TradeERP.Shared.ViewModels.Commons;
 
 namespace TradeERP.PL.Controllers;
 
