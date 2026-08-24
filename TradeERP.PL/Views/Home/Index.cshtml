@@ -1,32 +1,43 @@
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Home";
 }
 
-<h1 class="h3 mb-4">Dashboard</h1>
-
-<div class="row g-3">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Definitions</h5>
-                <p class="card-text text-muted">Employees, Departments, and other master data.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Inventory</h5>
-                <p class="card-text text-muted">Products and stock management.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Sales</h5>
-                <p class="card-text text-muted">Orders and customer transactions.</p>
-            </div>
-        </div>
-    </div>
+<!-- Hero Section -->
+<div class="jumbotron bg-light p-5 rounded mb-4">
+    <h1 class="display-4">Welcome to TradeERP</h1>
+    <p class="lead">A Clean Architecture ERP for Trading &amp; Distribution, built on ASP.NET Core 8 MVC.</p>
+    <hr class="my-4">
+    <p>This is the application shell — real modules (Employees, Products, Orders...) are added on top of this foundation.</p>
+    <a class="btn btn-primary btn-lg" href="#modules" role="button">Learn more</a>
 </div>
+
+<!-- Modules Section -->
+<section id="modules" class="mb-5">
+    <h2 class="mb-4">Modules</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people-fill text-primary"></i> Definitions</h5>
+                    <p class="card-text">Employees, departments, and other master data.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-box-seam text-success"></i> Inventory</h5>
+                    <p class="card-text">Products and stock management.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-cart-check text-warning"></i> Sales</h5>
+                    <p class="card-text">Orders and customer transactions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

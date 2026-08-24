@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TradeERP</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/tabulator-tables@6.2.5/dist/css/tabulator_bootstrap5.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -13,50 +14,71 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <div class="d-flex" id="app-wrapper">
-        <!-- Sidebar -->
-        <nav class="sidebar bg-dark text-white p-3" id="sidebar">
-            <a class="d-flex align-items-center mb-4 text-white text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
-                <span class="fs-4 fw-bold">TradeERP</span>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-boxes"></i> TradeERP
             </a>
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Index" class="nav-link text-white">Dashboard</a>
-                </li>
-                <li class="nav-item mt-2 text-uppercase small text-white-50 px-2">Definitions</li>
-                <li class="nav-item"><a class="nav-link text-white-50 disabled" href="#">Employees</a></li>
-                <li class="nav-item"><a class="nav-link text-white-50 disabled" href="#">Departments</a></li>
-                <li class="nav-item mt-2 text-uppercase small text-white-50 px-2">Inventory</li>
-                <li class="nav-item"><a class="nav-link text-white-50 disabled" href="#">Products</a></li>
-                <li class="nav-item mt-2 text-uppercase small text-white-50 px-2">Sales</li>
-                <li class="nav-item"><a class="nav-link text-white-50 disabled" href="#">Orders</a></li>
-                <li class="nav-item mt-2 text-uppercase small text-white-50 px-2">HR</li>
-                <li class="nav-item"><a class="nav-link text-white-50 disabled" href="#">Payroll</a></li>
-                <li class="nav-item mt-2 text-uppercase small text-white-50 px-2">Accounting</li>
-                <li class="nav-item"><a class="nav-link text-white-50 disabled" href="#">Ledger</a></li>
-                <li class="nav-item mt-2 text-uppercase small text-white-50 px-2">Reports</li>
-                <li class="nav-item"><a class="nav-link text-white-50 disabled" href="#">Reports</a></li>
-            </ul>
-        </nav>
-
-        <!-- Main content -->
-        <div class="flex-grow-1 d-flex flex-column" id="main-content">
-            <header class="navbar navbar-expand navbar-light bg-white border-bottom px-3">
-                <button class="btn btn-outline-secondary d-md-none" id="sidebarToggle" type="button">
-                    <span>&#9776;</span>
-                </button>
-                <span class="navbar-text ms-auto">@ViewData["Title"]</span>
-            </header>
-
-            <main role="main" class="p-3 flex-grow-1">
-                @RenderBody()
-            </main>
-
-            <footer class="border-top text-muted p-3 small">
-                &copy; 2026 - TradeERP
-            </footer>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Modules</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Definitions</h6></li>
+                            <li><a class="dropdown-item disabled" href="#">Employees</a></li>
+                            <li><a class="dropdown-item disabled" href="#">Departments</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Inventory</h6></li>
+                            <li><a class="dropdown-item disabled" href="#">Products</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Sales</h6></li>
+                            <li><a class="dropdown-item disabled" href="#">Orders</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">HR</h6></li>
+                            <li><a class="dropdown-item disabled" href="#">Payroll</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Accounting</h6></li>
+                            <li><a class="dropdown-item disabled" href="#">Ledger</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Reports</h6></li>
+                            <li><a class="dropdown-item disabled" href="#">Reports</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="py-4">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p>&copy; 2026 TradeERP - All Rights Reserved</p>
+            <p class="small">Built with ASP.NET Core 8 &amp; Bootstrap 5</p>
+        </div>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -64,12 +86,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://unpkg.com/tabulator-tables@6.2.5/dist/js/tabulator.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <script>
-        document.getElementById('sidebarToggle')?.addEventListener('click', function () {
-            document.getElementById('sidebar').classList.toggle('show');
-        });
-    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
