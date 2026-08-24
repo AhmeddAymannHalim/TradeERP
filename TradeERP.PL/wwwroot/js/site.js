@@ -1,36 +1,28 @@
-// TradeERP - Custom JavaScript
-
 document.addEventListener('DOMContentLoaded', function () {
-    // Bootstrap tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-    // Bootstrap popovers
-    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl);
+    document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+        document.body.classList.toggle('sidebar-enable');
     });
 
     setActiveNavLink();
 });
 
-// Highlight the current page's link in the navbar
 function setActiveNavLink() {
     const currentLocation = location.pathname;
-    const navLinks = document.querySelectorAll('.navbar-nav a.nav-link');
+    const navLinks = document.querySelectorAll('#sidebar-menu a[href]');
 
     navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === currentLocation ||
-            (currentLocation === '/' && link.getAttribute('href') === '/')) {
+        if (link.getAttribute('href') === currentLocation) {
             link.classList.add('active');
+            const parentCollapse = link.closest('.collapse');
+            if (parentCollapse) {
+                parentCollapse.classList.add('show');
+                const toggler = document.querySelector(`[data-bs-target="#${parentCollapse.id}"], [href="#${parentCollapse.id}"]`);
+                toggler?.setAttribute('aria-expanded', 'true');
+            }
         }
     });
 }
 
-// Show a SweetAlert2 toast notification
 function showToast(message, icon = 'info') {
     Swal.fire({
         toast: true,
@@ -43,7 +35,6 @@ function showToast(message, icon = 'info') {
     });
 }
 
-// SweetAlert2-based confirm dialog, returns a Promise<boolean>
 function confirmAction(message, title = 'Are you sure?') {
     return Swal.fire({
         title: title,
@@ -55,7 +46,6 @@ function confirmAction(message, title = 'Are you sure?') {
     }).then(result => result.isConfirmed);
 }
 
-// AJAX helper for POST requests (JSON body/response)
 function postData(url, data) {
     return fetch(url, {
         method: 'POST',
@@ -70,7 +60,6 @@ function postData(url, data) {
         });
 }
 
-// AJAX helper for GET requests (JSON response)
 function getData(url) {
     return fetch(url)
         .then(response => response.json())
@@ -79,12 +68,10 @@ function getData(url) {
         });
 }
 
-// Format date to locale string
 function formatDate(date, locale = 'en-US') {
     return new Date(date).toLocaleDateString(locale);
 }
 
-// Format currency
 function formatCurrency(amount, currency = 'USD') {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',

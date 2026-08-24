@@ -1,43 +1,61 @@
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Dashboard";
 }
 
-<!-- Hero Section -->
-<div class="jumbotron bg-light p-5 rounded mb-4">
-    <h1 class="display-4">Welcome to TradeERP</h1>
-    <p class="lead">A Clean Architecture ERP for Trading &amp; Distribution, built on ASP.NET Core 8 MVC.</p>
-    <hr class="my-4">
-    <p>This is the application shell — real modules (Employees, Products, Orders...) are added on top of this foundation.</p>
-    <a class="btn btn-primary btn-lg" href="#modules" role="button">Learn more</a>
-</div>
-
-<!-- Modules Section -->
-<section id="modules" class="mb-5">
-    <h2 class="mb-4">Modules</h2>
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-people-fill text-primary"></i> Definitions</h5>
-                    <p class="card-text">Employees, departments, and other master data.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-box-seam text-success"></i> Inventory</h5>
-                    <p class="card-text">Products and stock management.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-cart-check text-warning"></i> Sales</h5>
-                    <p class="card-text">Orders and customer transactions.</p>
-                </div>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-muted small">Employees</div>
+                <div class="fs-3 fw-bold">0</div>
             </div>
         </div>
     </div>
-</section>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-muted small">Departments</div>
+                <div class="fs-3 fw-bold">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-muted small">Reports Generated</div>
+                <div class="fs-3 fw-bold">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-muted small">Active Modules</div>
+                <div class="fs-3 fw-bold">2</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-card-list text-warning me-1"></i> Definitions
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Master data for the system — employees, departments, and other reference entities. Not implemented yet.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-bar-chart-line text-info me-1"></i> Reports
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Operational and management reports built on top of the Definitions data. Not implemented yet.</p>
+            </div>
+        </div>
+    </div>
+</div>

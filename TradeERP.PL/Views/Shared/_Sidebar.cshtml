@@ -1,0 +1,100 @@
+<div class="left-side-menu">
+    <a class="logo-box" asp-controller="Home" asp-action="Index">
+        <i class="bi bi-boxes"></i>
+        <span>TradeERP</span>
+    </a>
+
+    <div id="sidebar-menu">
+        <ul id="side-menu">
+            <li>
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-speedometer2 text-primary"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="side-nav-title">Modules</li>
+
+            <li>
+                <a href="#definitionsMenu" data-bs-toggle="collapse" aria-expanded="true">
+                    <i class="bi bi-card-list text-warning"></i>
+                    <span>Definitions</span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse show" id="definitionsMenu">
+                    <ul class="nav-second-level">
+                        <li><a class="disabled" href="#">Employees <span class="badge bg-secondary">soon</span></a></li>
+                        <li><a class="disabled" href="#">Departments <span class="badge bg-secondary">soon</span></a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li>
+                <a href="#reportsMenu" data-bs-toggle="collapse" aria-expanded="true">
+                    <i class="bi bi-bar-chart-line text-info"></i>
+                    <span>Reports</span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse show" id="reportsMenu">
+                    <ul class="nav-second-level">
+                        <li><a class="disabled" href="#">Reports <span class="badge bg-secondary">soon</span></a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title">Upcoming</li>
+
+            <li>
+                <a href="#inventoryMenu" data-bs-toggle="collapse">
+                    <i class="bi bi-box-seam text-success"></i>
+                    <span>Inventory</span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="inventoryMenu">
+                    <ul class="nav-second-level">
+                        <li><a class="disabled" href="#">Products</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li>
+                <a href="#salesMenu" data-bs-toggle="collapse">
+                    <i class="bi bi-cart-check text-danger"></i>
+                    <span>Sales</span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="salesMenu">
+                    <ul class="nav-second-level">
+                        <li><a class="disabled" href="#">Orders</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li>
+                <a href="#hrMenu" data-bs-toggle="collapse">
+                    <i class="bi bi-people text-secondary"></i>
+                    <span>HR</span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="hrMenu">
+                    <ul class="nav-second-level">
+                        <li><a class="disabled" href="#">Payroll</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li>
+                <a href="#accountingMenu" data-bs-toggle="collapse">
+                    <i class="bi bi-calculator text-dark"></i>
+                    <span>Accounting</span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="accountingMenu">
+                    <ul class="nav-second-level">
+                        <li><a class="disabled" href="#">Ledger</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
