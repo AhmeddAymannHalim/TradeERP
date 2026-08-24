@@ -1,8 +1,5 @@
 namespace TradeERP.Shared.ViewModels.Commons
 {
-    /// <summary>
-    /// Generic dropdown/lookup item, used for Select2 sources etc.
-    /// </summary>
     public class LookupItem
     {
         public int Id { get; set; }

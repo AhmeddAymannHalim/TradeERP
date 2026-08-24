@@ -6,10 +6,6 @@ using TradeERP.Shared.HelperServices.Interfaces;
 
 namespace TradeERP.Shared.HelperServices.Services
 {
-    /// <summary>
-    /// Resolves localized strings from flat JSON files under Resources/{culture}.json
-    /// (e.g. Resources/en.json, Resources/ar.json), instead of .resx files.
-    /// </summary>
     public class JsonStringLocalizer : IStringLocalizer
     {
         private readonly string _cultureName;

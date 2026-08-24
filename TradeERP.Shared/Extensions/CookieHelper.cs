@@ -2,10 +2,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace TradeERP.Shared.Extensions
 {
-    /// <summary>
-    /// Static cookie access helper for code that doesn't have direct access to HttpContext
-    /// (e.g. static utility classes). Must be configured once in Program.cs via Configure().
-    /// </summary>
     public static class CookieHelper
     {
         private static IHttpContextAccessor? _httpContextAccessor;
@@ -21,7 +17,7 @@ namespace TradeERP.Shared.Extensions
         private static CookieOptions DefaultOptions => new()
         {
             HttpOnly = true,
-            Secure = false, // Set true in production (HTTPS only)
+            Secure = false,
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddYears(1),
             Path = "/"

@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace TradeERP.Shared.ViewModels.Commons
 {
-    /// <summary>
-    /// Builds a standard "~/Views/Shared/Error.cshtml" ViewResult from controllers,
-    /// without each controller needing to build the ViewDataDictionary boilerplate itself.
-    /// </summary>
     public static class ErrorHandler
     {
         public static ViewResult ErrorView(string errorMessage)

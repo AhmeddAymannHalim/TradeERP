@@ -117,13 +117,11 @@ namespace TradeERP.PL.Extensions
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
-            // Allow localization of Views (Index.en.cshtml / Index.ar.cshtml alongside Index.cshtml)
             mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
         }
 
         private static void AddAppLocalization(this WebApplicationBuilder builder)
         {
-            // JSON-file based localization (Resources/en.json, Resources/ar.json) instead of .resx
             builder.Services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
