@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TradeERP.Shared\TradeERP.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- DAL only needs core EF Core (DbContext/DbSet/ModelBuilder). The SqlServer provider
+         and the Design/Tools packages belong in TradeERP.PL, since that's the startup
+         project where UseSqlServer(...) is configured and where `dotnet ef` runs from. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
