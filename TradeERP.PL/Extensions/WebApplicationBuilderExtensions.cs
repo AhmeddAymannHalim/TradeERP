@@ -1,5 +1,4 @@
-using System.Globalization;
-using System.IO.Compression;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -8,10 +7,13 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using TradeERP.BLL.DependencyInjection;
+using System.Globalization;
+using System.IO.Compression;
+using TradeERP.BLL;
 using TradeERP.DAL.Data;
 using TradeERP.Shared.HelperServices.Interfaces;
 using TradeERP.Shared.HelperServices.Services;
+using TradeERP.Shared.Options;
 
 namespace TradeERP.PL.Extensions
 {
@@ -32,6 +34,10 @@ namespace TradeERP.PL.Extensions
 
         private static void AddAppDbContext(this WebApplicationBuilder builder)
         {
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+            builder.Services.AddScoped<IToastrService, ToastrService>();
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -108,7 +114,13 @@ namespace TradeERP.PL.Extensions
 
         private static void AddAppMvc(this WebApplicationBuilder builder)
         {
-            var mvcBuilder = builder.Services.AddControllersWithViews();
+            // Without this, MVC auto-generates a hardcoded English "The X field is required."
+            // for every non-nullable string property (ArName, EnName, ...) before FluentValidation
+            // ever runs, so our localized Val.RequiredField message never gets a chance to show.
+            var mvcBuilder = builder.Services.AddControllersWithViews(options =>
+            {
+                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+            });
 
             mvcBuilder.AddJsonOptions(options =>
             {
@@ -118,10 +130,15 @@ namespace TradeERP.PL.Extensions
             });
 
             mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
         }
 
         private static void AddAppLocalization(this WebApplicationBuilder builder)
         {
+            builder.Services.Configure<CacheOptions>(
+                builder.Configuration.GetSection(CacheOptions.SectionName));
             builder.Services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");

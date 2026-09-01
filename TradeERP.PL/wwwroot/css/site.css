@@ -186,6 +186,45 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
+/* intl-tel-input defaults to display:inline-block with no set width, so with
+   separateDialCode it ends up wider than every other .form-control on the form. */
+.iti {
+    display: block;
+    width: 100%;
+}
+
+/* RTL: mirror the sidebar/topbar/content to the right side for Arabic */
+[dir="rtl"] .navbar-custom {
+    left: 0;
+    right: var(--sidebar-width);
+    transition: right 0.2s ease-in-out;
+}
+
+[dir="rtl"] .left-side-menu {
+    left: auto;
+    right: 0;
+    transition: right 0.2s ease-in-out;
+}
+
+[dir="rtl"] .content-page {
+    margin-left: 0;
+    margin-right: var(--sidebar-width);
+    transition: margin-right 0.2s ease-in-out;
+}
+
+[dir="rtl"] #sidebar-menu .menu-arrow {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+[dir="rtl"] #sidebar-menu .menu-arrow::before {
+    content: "\F284";
+}
+
+[dir="rtl"] .nav-second-level {
+    padding: 0.25rem 1.5rem 0.25rem 0;
+}
+
 /* Responsive: collapse sidebar off-canvas on small screens */
 @media (max-width: 991.98px) {
     .button-menu-mobile {
@@ -204,6 +243,21 @@ body {
 
     body.sidebar-enable .left-side-menu {
         left: 0;
+    }
+
+    [dir="rtl"] .navbar-custom,
+    [dir="rtl"] .content-page {
+        right: 0;
+        margin-right: 0;
+    }
+
+    [dir="rtl"] .left-side-menu {
+        left: auto;
+        right: calc(-1 * var(--sidebar-width));
+    }
+
+    [dir="rtl"] body.sidebar-enable .left-side-menu {
+        right: 0;
     }
 
     body.sidebar-enable::after {

@@ -1,0 +1,130 @@
+@using System.Globalization
+@model EmployeeViewModel
+@{
+    ViewBag.Title = L["InsertNewEmployee"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
+}
+
+<div class="container-fluid">
+    <form asp-action="Create">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="fw-bold m-0">@L["InsertNewEmployee"]</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="Code" class="form-label">@L["Code"]</label>
+                        <input asp-for="Code" class="form-control" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="ArName" class="form-label">@L["ArabicName"]</label>
+                        <input asp-for="ArName" class="form-control" />
+                        <span asp-validation-for="ArName" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="EnName" class="form-label">@L["EnglishName"]</label>
+                        <input asp-for="EnName" class="form-control" />
+                        <span asp-validation-for="EnName" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label">@L["PhoneNumber"]</label>
+                        <input asp-for="PhoneNumber" type="tel" class="form-control" data-phone-input />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="NationalId" class="form-label">@L["NationalId"]</label>
+                        <input asp-for="NationalId" class="form-control" />
+                        <span asp-validation-for="NationalId" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="Email" class="form-label">@L["Email"]</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="HireDate" class="form-label">@L["HireDate"]</label>
+                        <input asp-for="HireDate" type="date" class="form-control" />
+                        <span asp-validation-for="HireDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="BirthDate" class="form-label">@L["BirthDate"]</label>
+                        <input asp-for="BirthDate" type="date" class="form-control" />
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="SpecializationId" class="form-label">@L["Specialization"]</label>
+                        <select asp-for="SpecializationId" class="form-select">
+                            <option value="">@L["Choose"]</option>
+                            @foreach (var item in Model.Specializations)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label asp-for="CountryId" class="form-label">@L["Country"]</label>
+                        <select asp-for="CountryId" id="countrySelect" class="form-select">
+                            <option value="">@L["SelectCountry"]</option>
+                            @foreach (var item in Model.Countries)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label asp-for="GovId" class="form-label">@L["Gov"]</label>
+                        <select asp-for="GovId" id="govSelect" class="form-select" data-placeholder="@L["SelectGov"]">
+                            <option value="">@L["SelectGov"]</option>
+                            @foreach (var item in Model.Govs)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label asp-for="TownId" class="form-label">@L["Town"]</label>
+                        <select asp-for="TownId" id="townSelect" class="form-select" data-placeholder="@L["SelectTown"]">
+                            <option value="">@L["SelectTown"]</option>
+                            @foreach (var item in Model.Towns)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label asp-for="VillageId" class="form-label">@L["Village"]</label>
+                        <select asp-for="VillageId" id="villageSelect" class="form-select" data-placeholder="@L["SelectVillage"]">
+                            <option value="">@L["SelectVillage"]</option>
+                            @foreach (var item in Model.Villages)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-8 col-md-12">
+                        <label asp-for="Address" class="form-label">@L["Address"]</label>
+                        <input asp-for="Address" class="form-control" />
+                    </div>
+                    <div class="col-lg-4 col-md-6 d-flex align-items-end">
+                        <div class="form-check">
+                            <input asp-for="IsActive" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label">@L["IsActive"]</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-center gap-2">
+                <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

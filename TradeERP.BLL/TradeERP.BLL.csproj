@@ -10,6 +10,13 @@
          and Microsoft.Extensions.DependencyInjection.Abstractions (for IServiceCollection),
          so no separate references to either are needed. -->
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="IServices\" />
+    <Folder Include="Validations\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <PropertyGroup>

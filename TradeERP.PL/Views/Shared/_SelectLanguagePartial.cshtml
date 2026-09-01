@@ -1,0 +1,26 @@
+@using System.Globalization
+@{
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
+    var isArabic = CultureInfo.CurrentUICulture.Name.StartsWith("ar");
+}
+
+<li class="dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+        <i class="bi bi-globe2"></i>
+        <span class="ms-1">@(isArabic ? L["Arabic"] : L["English"])</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+            <a class="dropdown-item @(isArabic ? "active" : "")" asp-action="SetLanguage" asp-controller="Home"
+               asp-route-culture="ar" asp-route-returnUrl="@returnUrl">
+                @L["Arabic"]
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item @(!isArabic ? "active" : "")" asp-action="SetLanguage" asp-controller="Home"
+               asp-route-culture="en" asp-route-returnUrl="@returnUrl">
+                @L["English"]
+            </a>
+        </li>
+    </ul>
+</li>

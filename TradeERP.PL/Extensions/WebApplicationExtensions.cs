@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TradeERP.DAL.Data;
+using TradeERP.DAL.SeedData;
 using TradeERP.Shared.Extensions;
 
 namespace TradeERP.PL.Extensions
@@ -47,12 +48,12 @@ namespace TradeERP.PL.Extensions
             {
                 var dbContext = services.GetRequiredService<ApplicationDbContext>();
                 await dbContext.Database.MigrateAsync();
-
+                await DataSeeder.SeedAsync(dbContext);
             }
             catch (Exception ex)
             {
                 var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "An error occurred while migrating the database.");
+                logger.LogError(ex, "An error occurred while migrating/seeding the database.");
             }
         }
     }

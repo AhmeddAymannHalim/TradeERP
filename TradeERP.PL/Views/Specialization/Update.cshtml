@@ -1,0 +1,44 @@
+@model SpecializationViewModel
+@{
+    ViewBag.Title = L["EditSpecialization"];
+}
+
+<div class="container-fluid">
+    <form asp-action="Update">
+        <input type="hidden" asp-for="Id" />
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="fw-bold m-0">@L["EditSpecialization"]</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="Code" class="form-label"></label>
+                        <input asp-for="Code" class="form-control" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="ArName" class="form-label">@L["ArabicName"]</label>
+                        <input asp-for="ArName" class="form-control" />
+                        <span asp-validation-for="ArName" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="EnName" class="form-label">@L["EnglishName"]</label>
+                        <input asp-for="EnName" class="form-control" />
+                        <span asp-validation-for="EnName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-center gap-2">
+                <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

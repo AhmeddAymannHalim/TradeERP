@@ -5,10 +5,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- DAL only needs core EF Core (DbContext/DbSet/ModelBuilder). The SqlServer provider
-         and the Design/Tools packages belong in TradeERP.PL, since that's the startup
-         project where UseSqlServer(...) is configured and where `dotnet ef` runs from. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
   </ItemGroup>
 
   <PropertyGroup>

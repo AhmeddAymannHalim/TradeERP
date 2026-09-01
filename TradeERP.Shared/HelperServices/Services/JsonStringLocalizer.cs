@@ -20,13 +20,19 @@ namespace TradeERP.Shared.HelperServices.Services
             _cultureName = cultureName ?? CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
         }
 
+        private static readonly JsonSerializerOptions FileOptions = new()
+        {
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
+
         private static Dictionary<string, string> LoadFile(string filePath)
         {
             if (!File.Exists(filePath))
                 return new Dictionary<string, string>();
 
             using var stream = File.OpenRead(filePath);
-            return JsonSerializer.Deserialize<Dictionary<string, string>>(stream) ?? new Dictionary<string, string>();
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(stream, FileOptions) ?? new Dictionary<string, string>();
         }
 
         private string GetString(string resourceKey)
