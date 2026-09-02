@@ -8,6 +8,8 @@ namespace TradeERP.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
+            builder.HasIndex(e => e.Code);
+
             builder.Property(e => e.BasicSalary).HasColumnType("decimal(18,2)");
 
             builder.HasOne(e => e.Specialization)

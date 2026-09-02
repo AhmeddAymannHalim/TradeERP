@@ -1,0 +1,72 @@
+@using System.Globalization
+@model EntryDetailsViewModel
+@{
+    ViewBag.Title = L["EditEntryDetails"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-9">
+            <form asp-action="Update">
+                <input type="hidden" asp-for="Id" />
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h4 class="fw-bold m-0">@L["EditEntryDetails"]</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center justify-content-center">
+                            <div class="col-md-4">
+                                <label asp-for="Code" class="form-label"></label>
+                                <input asp-for="Code" class="form-control" />
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="EntryMasterId" class="form-label">@L["JournalEntry"]</label>
+                                <select asp-for="EntryMasterId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.EntryMasters)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="EntryMasterId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="LedgerAccountId" class="form-label">@L["Account"]</label>
+                                <select asp-for="LedgerAccountId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.LedgerAccounts)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="LedgerAccountId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="DebitAmount" class="form-label">@L["DebitAmount"]</label>
+                                <input asp-for="DebitAmount" class="form-control" />
+                                <span asp-validation-for="DebitAmount" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="CreditAmount" class="form-label">@L["CreditAmount"]</label>
+                                <input asp-for="CreditAmount" class="form-control" />
+                                <span asp-validation-for="CreditAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

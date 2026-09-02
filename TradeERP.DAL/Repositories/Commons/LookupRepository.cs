@@ -107,5 +107,98 @@ namespace TradeERP.DAL.Repositories.Commons
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<LookupItem>> CategoryLookupAsync()
+        {
+            return await _context.Categories
+                .Select(a => new LookupItem
+                {
+                    Id = a.Id,
+                    ArName = a.ArName,
+                    EnName = a.EnName
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LookupItem>> ProductLookupAsync()
+        {
+            return await _context.Products
+                .Select(a => new LookupItem
+                {
+                    Id = a.Id,
+                    ArName = a.ArName,
+                    EnName = a.EnName
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LookupItem>> CustomerLookupAsync()
+        {
+            return await _context.Customers
+                .Select(a => new LookupItem
+                {
+                    Id = a.Id,
+                    ArName = a.ArName,
+                    EnName = a.EnName
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LookupItem>> SupplierLookupAsync()
+        {
+            return await _context.Suppliers
+                .Select(a => new LookupItem
+                {
+                    Id = a.Id,
+                    ArName = a.ArName,
+                    EnName = a.EnName
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LookupItem>> LedgerAccountLookupAsync()
+        {
+            return await _context.LedgerAccounts
+                .Select(a => new LookupItem
+                {
+                    Id = a.Id,
+                    ArName = a.ArName,
+                    EnName = a.EnName
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // BillMaster/EntryMaster have no ArName/EnName, so Code is projected into both
+        // LookupItem display fields as a pragmatic reuse of the shared lookup shape.
+        public async Task<IEnumerable<LookupItem>> BillMasterLookupAsync()
+        {
+            return await _context.BillMasters
+                .Select(b => new LookupItem
+                {
+                    Id = b.Id,
+                    ArName = b.Code,
+                    EnName = b.Code
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LookupItem>> EntryMasterLookupAsync()
+        {
+            return await _context.EntryMasters
+                .Select(m => new LookupItem
+                {
+                    Id = m.Id,
+                    ArName = m.Code,
+                    EnName = m.Code
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

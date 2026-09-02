@@ -8,6 +8,8 @@ namespace TradeERP.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
+            builder.HasIndex(d => d.Code);
+
             builder.HasOne(d => d.Manager)
                 .WithMany()
                 .HasForeignKey(d => d.ManagerId)

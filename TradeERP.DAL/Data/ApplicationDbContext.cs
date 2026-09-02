@@ -27,6 +27,18 @@ namespace TradeERP.DAL.Data
         public DbSet<Town> Towns => Set<Town>();
         public DbSet<Village> Villages => Set<Village>();
 
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<Product> Products => Set<Product>();
+        public DbSet<Customer> Customers => Set<Customer>();
+        public DbSet<Supplier> Suppliers => Set<Supplier>();
+        public DbSet<LedgerAccount> LedgerAccounts => Set<LedgerAccount>();
+        public DbSet<BillMaster> BillMasters => Set<BillMaster>();
+        public DbSet<BillDetails> BillDetails => Set<BillDetails>();
+        public DbSet<EntryMaster> EntryMasters => Set<EntryMaster>();
+        public DbSet<EntryDetails> EntryDetails => Set<EntryDetails>();
+        public DbSet<BillSetting> BillSettings => Set<BillSetting>();
+        public DbSet<EntrySetting> EntrySettings => Set<EntrySetting>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

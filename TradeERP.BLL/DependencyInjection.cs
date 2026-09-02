@@ -27,6 +27,18 @@ namespace TradeERP.BLL
             services.AddScoped<ISpecializationServices, SpecializationServices>();
             services.AddScoped<IDepartmentServices, DepartmentServices>();
 
+            services.AddScoped<ICategoryServices, CategoryServices>();
+            services.AddScoped<IProductServices, ProductServices>();
+            services.AddScoped<ICustomerServices, CustomerServices>();
+            services.AddScoped<ISupplierServices, SupplierServices>();
+            services.AddScoped<ILedgerAccountServices, LedgerAccountServices>();
+            services.AddScoped<IBillMasterServices, BillMasterServices>();
+            services.AddScoped<IBillDetailsServices, BillDetailsServices>();
+            services.AddScoped<IEntryMasterServices, EntryMasterServices>();
+            services.AddScoped<IEntryDetailsServices, EntryDetailsServices>();
+            services.AddScoped<IBillSettingServices, BillSettingServices>();
+            services.AddScoped<IEntrySettingServices, EntrySettingServices>();
+
             services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
 
             return services;

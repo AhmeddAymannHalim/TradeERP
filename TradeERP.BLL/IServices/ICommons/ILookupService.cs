@@ -11,5 +11,12 @@ namespace TradeERP.BLL.IServices.ICommons
         Task<List<LookupItem>> GovLookupByCountryIdAsync(int countryId);
         Task<List<LookupItem>> TownLookupByGovIdAsync(int govId);
         Task<List<LookupItem>> VillageLookupByTownIdAsync(int townId);
+        Task<List<LookupItem>> CategoryLookupAsync();
+        Task<List<LookupItem>> ProductLookupAsync();
+        Task<List<LookupItem>> CustomerLookupAsync();
+        Task<List<LookupItem>> SupplierLookupAsync();
+        Task<List<LookupItem>> LedgerAccountLookupAsync();
+        Task<List<LookupItem>> BillMasterLookupAsync();
+        Task<List<LookupItem>> EntryMasterLookupAsync();
     }
 }

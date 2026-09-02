@@ -32,6 +32,52 @@ namespace TradeERP.BLL.MappingProfiles
                 .ForMember(d => d.Manager, o => o.Ignore())
                 .ForMember(d => d.ParentDepartment, o => o.Ignore())
                 .ForMember(d => d.SubDepartments, o => o.Ignore());
+
+            CreateMap<Category, CategoryViewModel>()
+                .ReverseMap();
+
+            CreateMap<Product, ProductViewModel>()
+                .ReverseMap()
+                .ForMember(d => d.Category, o => o.Ignore());
+
+            CreateMap<Customer, CustomerViewModel>()
+                .ReverseMap();
+
+            CreateMap<Supplier, SupplierViewModel>()
+                .ReverseMap();
+
+            CreateMap<LedgerAccount, LedgerAccountViewModel>()
+                .ReverseMap();
+
+            CreateMap<BillMaster, BillMasterViewModel>()
+                .ReverseMap()
+                .ForMember(d => d.Customer, o => o.Ignore())
+                .ForMember(d => d.Supplier, o => o.Ignore());
+
+            CreateMap<BillDetails, BillDetailsViewModel>()
+                .ForMember(d => d.BillMasterCode, o => o.MapFrom(s => s.BillMaster != null ? s.BillMaster.Code : string.Empty))
+                .ForMember(d => d.ProductArName, o => o.MapFrom(s => s.Product != null ? s.Product.ArName : string.Empty))
+                .ForMember(d => d.ProductEnName, o => o.MapFrom(s => s.Product != null ? s.Product.EnName : string.Empty))
+                .ReverseMap()
+                .ForMember(d => d.BillMaster, o => o.Ignore())
+                .ForMember(d => d.Product, o => o.Ignore());
+
+            CreateMap<EntryMaster, EntryMasterViewModel>()
+                .ReverseMap();
+
+            CreateMap<EntryDetails, EntryDetailsViewModel>()
+                .ForMember(d => d.EntryMasterCode, o => o.MapFrom(s => s.EntryMaster != null ? s.EntryMaster.Code : string.Empty))
+                .ForMember(d => d.LedgerAccountArName, o => o.MapFrom(s => s.LedgerAccount != null ? s.LedgerAccount.ArName : string.Empty))
+                .ForMember(d => d.LedgerAccountEnName, o => o.MapFrom(s => s.LedgerAccount != null ? s.LedgerAccount.EnName : string.Empty))
+                .ReverseMap()
+                .ForMember(d => d.EntryMaster, o => o.Ignore())
+                .ForMember(d => d.LedgerAccount, o => o.Ignore());
+
+            CreateMap<BillSetting, BillSettingViewModel>()
+                .ReverseMap();
+
+            CreateMap<EntrySetting, EntrySettingViewModel>()
+                .ReverseMap();
         }
     }
 }

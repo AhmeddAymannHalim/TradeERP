@@ -33,5 +33,26 @@ namespace TradeERP.BLL.Services.Commons
 
         public async Task<List<LookupItem>> VillageLookupByTownIdAsync(int townId)
             => (await _unitOfWork.Lookups.VillageLookupByTownIdAsync(townId)).ToList();
+
+        public async Task<List<LookupItem>> CategoryLookupAsync()
+            => (await _unitOfWork.Lookups.CategoryLookupAsync()).ToList();
+
+        public async Task<List<LookupItem>> ProductLookupAsync()
+            => (await _unitOfWork.Lookups.ProductLookupAsync()).ToList();
+
+        public async Task<List<LookupItem>> CustomerLookupAsync()
+            => (await _unitOfWork.Lookups.CustomerLookupAsync()).ToList();
+
+        public async Task<List<LookupItem>> SupplierLookupAsync()
+            => (await _unitOfWork.Lookups.SupplierLookupAsync()).ToList();
+
+        public async Task<List<LookupItem>> LedgerAccountLookupAsync()
+            => (await _unitOfWork.Lookups.LedgerAccountLookupAsync()).ToList();
+
+        public async Task<List<LookupItem>> BillMasterLookupAsync()
+            => (await _unitOfWork.Lookups.BillMasterLookupAsync()).ToList();
+
+        public async Task<List<LookupItem>> EntryMasterLookupAsync()
+            => (await _unitOfWork.Lookups.EntryMasterLookupAsync()).ToList();
     }
 }
