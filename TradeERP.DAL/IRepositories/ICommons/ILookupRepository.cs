@@ -6,6 +6,7 @@ namespace TradeERP.DAL.IRepositories.ICommons
     {
         Task<IEnumerable<LookupItem>> SpecializationLookupAsync();
         Task<IEnumerable<LookupItem>> EmployeeLookupAsync();
+        Task<IEnumerable<LookupItem>> DepartmentLookupAsync();
         Task<IEnumerable<LookupItem>> CountryLookupAsync();
         Task<IEnumerable<LookupItem>> GovLookupByCountryIdAsync(int countryId);
         Task<IEnumerable<LookupItem>> TownLookupByGovIdAsync(int govId);

@@ -6,14 +6,16 @@
 }
 
 <div class="container-fluid">
-    <form asp-action="Update">
-        <input type="hidden" asp-for="Id" />
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h4 class="fw-bold m-0">@L["EditEmployee"]</h4>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <form asp-action="Update">
+                <input type="hidden" asp-for="Id" />
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h4 class="fw-bold m-0">@L["EditEmployee"]</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center justify-content-center">
                     <div class="col-lg-4 col-md-6">
                         <label asp-for="Code" class="form-label">@L["Code"]</label>
                         <input asp-for="Code" class="form-control" />
@@ -64,6 +66,89 @@
                             }
                         </select>
                     </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="DepartmentId" class="form-label">@L["Department"]</label>
+                        <select asp-for="DepartmentId" class="form-select">
+                            <option value="">@L["Choose"]</option>
+                            @foreach (var item in Model.Departments)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="ManagerId" class="form-label">@L["Manager"]</label>
+                        <select asp-for="ManagerId" class="form-select">
+                            <option value="">@L["Choose"]</option>
+                            @foreach (var item in Model.Managers)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="JobTitle" class="form-label">@L["JobTitle"]</label>
+                        <input asp-for="JobTitle" class="form-control" />
+                        <span asp-validation-for="JobTitle" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="Gender" class="form-label">@L["Gender"]</label>
+                        <select asp-for="Gender" class="form-select">
+                            @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.Gender>())
+                            {
+                                <option value="@item.Value">@L[item.Text]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="MaritalStatus" class="form-label">@L["MaritalStatus"]</label>
+                        <select asp-for="MaritalStatus" class="form-select">
+                            @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.MaritalStatus>())
+                            {
+                                <option value="@item.Value">@L[item.Text]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="ContractType" class="form-label">@L["ContractType"]</label>
+                        <select asp-for="ContractType" class="form-select">
+                            @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.ContractType>())
+                            {
+                                <option value="@item.Value">@L[item.Text]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="BasicSalary" class="form-label">@L["BasicSalary"]</label>
+                        <input asp-for="BasicSalary" type="number" step="0.01" class="form-control" />
+                        <span asp-validation-for="BasicSalary" class="text-danger"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="BankAccountNumber" class="form-label">@L["BankAccountNumber"]</label>
+                        <input asp-for="BankAccountNumber" class="form-control" />
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="IBAN" class="form-label">@L["IBAN"]</label>
+                        <input asp-for="IBAN" class="form-control" />
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="InsuranceNumber" class="form-label">@L["InsuranceNumber"]</label>
+                        <input asp-for="InsuranceNumber" class="form-control" />
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="NationalityId" class="form-label">@L["Nationality"]</label>
+                        <select asp-for="NationalityId" class="form-select">
+                            <option value="">@L["Choose"]</option>
+                            @foreach (var item in Model.Nationalities)
+                            {
+                                <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label asp-for="TerminationDate" class="form-label">@L["TerminationDate"]</label>
+                        <input asp-for="TerminationDate" type="date" class="form-control" />
+                    </div>
                     <div class="col-lg-3 col-md-6">
                         <label asp-for="CountryId" class="form-label">@L["Country"]</label>
                         <select asp-for="CountryId" id="countrySelect" class="form-select">
@@ -108,20 +193,22 @@
                         <label asp-for="Address" class="form-label">@L["Address"]</label>
                         <input asp-for="Address" class="form-control" />
                     </div>
-                    <div class="col-lg-4 col-md-6 d-flex align-items-end">
+                    <div class="col-lg-4 col-md-6 d-flex align-items-center">
                         <div class="form-check">
                             <input asp-for="IsActive" class="form-check-input" />
                             <label asp-for="IsActive" class="form-check-label">@L["IsActive"]</label>
                         </div>
                     </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+                    </div>
                 </div>
-            </div>
-            <div class="card-footer d-flex justify-content-center gap-2">
-                <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
-                <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

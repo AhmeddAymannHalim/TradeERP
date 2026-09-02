@@ -1,3 +1,4 @@
+using TradeERP.Shared.Enums;
 using TradeERP.Shared.ViewModels.Commons;
 
 namespace TradeERP.Shared.ViewModels.Definitions
@@ -16,8 +17,28 @@ namespace TradeERP.Shared.ViewModels.Definitions
         public DateTime BirthDate { get; set; }
         public bool IsActive { get; set; } = true;
 
+        public Gender Gender { get; set; }
+        public MaritalStatus MaritalStatus { get; set; }
+        public ContractType ContractType { get; set; }
+        public string JobTitle { get; set; } = string.Empty;
+        public decimal BasicSalary { get; set; }
+        public string BankAccountNumber { get; set; } = string.Empty;
+        public string IBAN { get; set; } = string.Empty;
+        public string InsuranceNumber { get; set; } = string.Empty;
+        public string EmployeeImage { get; set; } = string.Empty;
+        public DateTime? TerminationDate { get; set; }
+
+        public int? ManagerId { get; set; }
+        public List<LookupItem> Managers { get; set; } = new List<LookupItem>();
+
         public int? SpecializationId { get; set; }
         public List<LookupItem> Specializations { get; set; } = new List<LookupItem>();
+
+        public int? DepartmentId { get; set; }
+        public List<LookupItem> Departments { get; set; } = new List<LookupItem>();
+
+        public int? NationalityId { get; set; }
+        public List<LookupItem> Nationalities { get; set; } = new List<LookupItem>();
 
         public int? CountryId { get; set; }
         public int? GovId { get; set; }

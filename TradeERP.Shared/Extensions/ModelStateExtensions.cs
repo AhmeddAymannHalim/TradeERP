@@ -1,0 +1,16 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace TradeERP.Shared.Extensions
+{
+    public static class ModelStateExtensions
+    {
+        public static Dictionary<string, string[]> ToErrorDictionary(this ModelStateDictionary modelState)
+        {
+            return modelState
+                .Where(kvp => kvp.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray());
+        }
+    }
+}

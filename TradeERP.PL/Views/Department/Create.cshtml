@@ -1,0 +1,113 @@
+@using System.Globalization
+@model DepartmentViewModel
+@{
+    ViewBag.Title = L["InsertNewDepartment"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-9">
+            <form asp-action="Create">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h4 class="fw-bold m-0">@L["InsertNewDepartment"]</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center justify-content-center">
+                            <div class="col-md-4">
+                                <label asp-for="Code" class="form-label"></label>
+                                <input asp-for="Code" class="form-control" />
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="ArName" class="form-label">@L["ArabicName"]</label>
+                                <input asp-for="ArName" class="form-control" />
+                                <span asp-validation-for="ArName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="EnName" class="form-label">@L["EnglishName"]</label>
+                                <input asp-for="EnName" class="form-control" />
+                                <span asp-validation-for="EnName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="ManagerId" class="form-label">@L["Manager"]</label>
+                                <select asp-for="ManagerId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.Managers)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <label class="form-label d-block">@L["DepartmentType"]</label>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <div class="form-check">
+                                        <input type="radio" id="deptTypeParent" name="departmentType" value="parent" class="form-check-input" checked="@(Model.ParentDepartmentId == null)" />
+                                        <label for="deptTypeParent" class="form-check-label">@L["Parent"]</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" id="deptTypeChild" name="departmentType" value="child" class="form-check-input" checked="@(Model.ParentDepartmentId != null)" />
+                                        <label for="deptTypeChild" class="form-check-label">@L["Child"]</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="parentDepartmentContainer" hidden="@(Model.ParentDepartmentId == null)">
+                                <label asp-for="ParentDepartmentId" class="form-label">@L["ParentDepartment"]</label>
+                                <select asp-for="ParentDepartmentId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.ParentDepartments)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-flex justify-content-center gap-4 pt-1">
+                                    <div class="form-check">
+                                        <input asp-for="HasShiftNight" class="form-check-input" />
+                                        <label asp-for="HasShiftNight" class="form-check-label">@L["HasShiftNight"]</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" />
+                                        <label asp-for="IsActive" class="form-check-label">@L["IsActive"]</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        (function () {
+            var parentRadio = document.getElementById('deptTypeParent');
+            var childRadio = document.getElementById('deptTypeChild');
+            var container = document.getElementById('parentDepartmentContainer');
+            var select = document.getElementById('ParentDepartmentId');
+
+            function toggle() {
+                var isChild = childRadio.checked;
+                container.hidden = !isChild;
+                if (!isChild) select.value = '';
+            }
+
+            parentRadio.addEventListener('change', toggle);
+            childRadio.addEventListener('change', toggle);
+        })();
+    </script>
+}

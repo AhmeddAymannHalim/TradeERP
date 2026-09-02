@@ -6,6 +6,7 @@ namespace TradeERP.BLL.IServices.ICommons
     {
         Task<List<LookupItem>> SpecializationLookupAsync();
         Task<List<LookupItem>> EmployeeLookupAsync();
+        Task<List<LookupItem>> DepartmentLookupAsync();
         Task<List<LookupItem>> CountryLookupAsync();
         Task<List<LookupItem>> GovLookupByCountryIdAsync(int countryId);
         Task<List<LookupItem>> TownLookupByGovIdAsync(int govId);

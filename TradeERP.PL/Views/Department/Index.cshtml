@@ -1,12 +1,12 @@
-@model PaginatedResult<EmployeeViewModel>
+@model PaginatedResult<DepartmentViewModel>
 @{
-    ViewBag.Title = L["EmployeeList"];
+    ViewBag.Title = L["DepartmentList"];
 }
 
 <div class="container-fluid">
     <div class="card shadow-sm">
         <div class="card-header">
-            <h4 class="fw-bold">@L["EmployeeList"]</h4>
+            <h4 class="fw-bold">@L["DepartmentList"]</h4>
         </div>
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
@@ -29,7 +29,8 @@
                             <th>@L["Code"]</th>
                             <th>@L["ArabicName"]</th>
                             <th>@L["EnglishName"]</th>
-                            <th>@L["PhoneNumber"]</th>
+                            <th>@L["HasShiftNight"]</th>
+                            <th>@L["DepartmentType"]</th>
                             <th>@L["Actions"]</th>
                         </tr>
                     </thead>
@@ -44,12 +45,31 @@
                                     <td>@item.Code</td>
                                     <td>@item.ArName</td>
                                     <td>@item.EnName</td>
-                                    <td dir="ltr">@item.PhoneNumber</td>
+                                    <td>
+                                        @if (item.HasShiftNight)
+                                        {
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.ParentDepartmentId == null)
+                                        {
+                                            <span class="badge bg-primary-subtle text-primary-emphasis">@L["Parent"]</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis">@L["Child"]</span>
+                                        }
+                                    </td>
                                     <td>
                                         <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="javascript:void(0)" onclick="Delete('/Employee/Delete/@item.Id')" class="btn btn-danger btn-sm">
+                                        <a href="javascript:void(0)" onclick="Delete('/Department/Delete/@item.Id')" class="btn btn-danger btn-sm">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </td>
@@ -60,7 +80,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="6">@L["NoData"]</td>
+                                <td colspan="7">@L["NoData"]</td>
                             </tr>
                         }
                     </tbody>

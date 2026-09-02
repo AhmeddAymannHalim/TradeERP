@@ -1,3 +1,7 @@
+function t(key) {
+    return (window.L && window.L[key]) || key;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('sidebarToggle')?.addEventListener('click', function () {
         document.body.classList.toggle('sidebar-enable');
@@ -37,18 +41,18 @@ function initAjaxForms() {
                     clearValidationErrors(form);
 
                     if (result.success) {
-                        showToast(result.message || 'Saved successfully', 'success');
+                        showToast(result.message || t('SavedSuccessfully'), 'success');
                         setTimeout(() => {
                             if (result.redirectUrl) location.href = result.redirectUrl;
                         }, 600);
                     } else {
                         if (result.errors) applyValidationErrors(form, result.errors);
-                        showToast(result.message || 'Something went wrong', 'error');
+                        showToast(result.message || t('SomethingWentError'), 'error');
                         submitBtn?.removeAttribute('disabled');
                     }
                 })
                 .catch(() => {
-                    showToast('Something went wrong', 'error');
+                    showToast(t('SomethingWentError'), 'error');
                     submitBtn?.removeAttribute('disabled');
                 });
         });
@@ -188,7 +192,7 @@ function initPhoneInputs() {
 
             if (!iti.isValidNumber()) {
                 e.preventDefault();
-                showToast('Invalid phone number', 'error');
+                showToast(t('InvalidPhoneNumber'), 'error');
                 return;
             }
 
@@ -236,14 +240,14 @@ function showToast(message, icon = 'info') {
     });
 }
 
-function confirmAction(message, title = 'Are you sure?') {
+function confirmAction(message, title) {
     return Swal.fire({
-        title: title,
+        title: title || t('AreYouSure'),
         text: message,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: t('Yes'),
+        cancelButtonText: t('Cancel')
     }).then(result => result.isConfirmed);
 }
 
@@ -269,32 +273,32 @@ function getData(url) {
         });
 }
 
-function formatDate(date, locale = 'en-US') {
-    return new Date(date).toLocaleDateString(locale);
+function formatDate(date, locale) {
+    return new Date(date).toLocaleDateString(locale || (window.CurrentCulture === 'ar' ? 'ar-EG' : 'en-US'));
 }
 
 function formatCurrency(amount, currency = 'USD') {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(window.CurrentCulture === 'ar' ? 'ar-EG' : 'en-US', {
         style: 'currency',
         currency: currency
     }).format(amount);
 }
 
 function Delete(url) {
-    confirmAction('This action cannot be undone.', 'Are you sure?').then(confirmed => {
+    confirmAction(t('ActionCannotBeUndone'), t('AreYouSure')).then(confirmed => {
         if (!confirmed) return;
 
         fetch(url)
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    showToast(result.message || 'Deleted successfully', 'success');
+                    showToast(result.message || t('DeletedSuccessfully'), 'success');
                     setTimeout(() => location.reload(), 800);
                 } else {
-                    showToast(result.message || result.errorMessage || 'Delete failed', 'error');
+                    showToast(result.message || result.errorMessage || t('DeleteFailed'), 'error');
                 }
             })
-            .catch(() => showToast('Delete failed', 'error'));
+            .catch(() => showToast(t('DeleteFailed'), 'error'));
     });
 }
 

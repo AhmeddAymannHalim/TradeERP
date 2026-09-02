@@ -21,6 +21,7 @@ namespace TradeERP.DAL.Data
 
         public DbSet<Employee> Employees => Set<Employee>();
         public DbSet<Specialization> Specializations => Set<Specialization>();
+        public DbSet<Department> Departments => Set<Department>();
         public DbSet<Country> Countries => Set<Country>();
         public DbSet<Governorate> Governorates => Set<Governorate>();
         public DbSet<Town> Towns => Set<Town>();

@@ -25,6 +25,7 @@ namespace TradeERP.BLL
             services.AddScoped<ILookupService, LookupService>();
             services.AddScoped<IEmployeeServices, EmployeeServices>();
             services.AddScoped<ISpecializationServices, SpecializationServices>();
+            services.AddScoped<IDepartmentServices, DepartmentServices>();
 
             services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
 

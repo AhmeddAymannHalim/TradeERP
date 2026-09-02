@@ -20,45 +20,36 @@ namespace TradeERP.BLL.Services.Definitions
 
         public async Task<PaginatedResult<EmployeeViewModel>> GetPagedEmployees(int pageNo, string? searchString)
         {
-            var result = await _unitOfWork.Definitions.GetPagedEmployees(pageNo, searchString);
-
-            return new PaginatedResult<EmployeeViewModel>
-            {
-                Data = _mapper.Map<List<EmployeeViewModel>>(result.Data),
-                TotalRecords = result.TotalRecords,
-                PageNo = result.PageNo,
-                PageSize = result.PageSize,
-                NoOfPages = result.NoOfPages,
-                SearchString = result.SearchString
-            };
+            var result = await _unitOfWork.Employees.GetPagedAsync(pageNo, searchString);
+            return _mapper.Map<PaginatedResult<EmployeeViewModel>>(result);
         }
 
         public async Task<EmployeeViewModel?> GetEmployeeById(int id)
         {
-            var model = await _unitOfWork.Definitions.GetEmployeeById(id);
+            var model = await _unitOfWork.Employees.GetByIdAsync(id);
             return model == null ? null : _mapper.Map<EmployeeViewModel>(model);
         }
 
         public async Task<int> GetNewEmployeeCodeAsync()
         {
-            return await _unitOfWork.Definitions.GetNewEmployeeCodeAsync();
+            return await _unitOfWork.Employees.GetNewCodeAsync();
         }
 
         public async Task<ResultMessage> AddEmployee(EmployeeViewModel viewModel)
         {
             var model = _mapper.Map<Employee>(viewModel);
-            return await _unitOfWork.Definitions.AddEmployee(model);
+            return await _unitOfWork.Employees.AddAsync(model);
         }
 
         public async Task<ResultMessage> UpdateEmployee(EmployeeViewModel viewModel)
         {
             var model = _mapper.Map<Employee>(viewModel);
-            return await _unitOfWork.Definitions.UpdateEmployee(model);
+            return await _unitOfWork.Employees.UpdateAsync(model);
         }
 
         public async Task<ResultMessage> DeleteEmployee(int id)
         {
-            return await _unitOfWork.Definitions.DeleteEmployee(id);
+            return await _unitOfWork.Employees.DeleteAsync(id);
         }
     }
 }

@@ -120,6 +120,7 @@ namespace TradeERP.PL.Extensions
             var mvcBuilder = builder.Services.AddControllersWithViews(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+                options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
             });
 
             mvcBuilder.AddJsonOptions(options =>

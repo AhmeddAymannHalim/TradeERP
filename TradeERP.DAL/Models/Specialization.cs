@@ -1,6 +1,6 @@
 namespace TradeERP.DAL.Models
 {
-    public class Specialization : BaseEntity
+    public class Specialization : BaseEntity, ICodeDefinition
     {
         public string Code { get; set; } = string.Empty;
         public string ArName { get; set; } = string.Empty;

@@ -19,6 +19,9 @@ namespace TradeERP.BLL.Services.Commons
         public async Task<List<LookupItem>> EmployeeLookupAsync()
             => (await _unitOfWork.Lookups.EmployeeLookupAsync()).ToList();
 
+        public async Task<List<LookupItem>> DepartmentLookupAsync()
+            => (await _unitOfWork.Lookups.DepartmentLookupAsync()).ToList();
+
         public async Task<List<LookupItem>> CountryLookupAsync()
             => (await _unitOfWork.Lookups.CountryLookupAsync()).ToList();
 

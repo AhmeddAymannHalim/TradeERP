@@ -8,9 +8,26 @@ namespace TradeERP.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
+            builder.Property(e => e.BasicSalary).HasColumnType("decimal(18,2)");
+
             builder.HasOne(e => e.Specialization)
                 .WithMany(s => s.Employees)
                 .HasForeignKey(e => e.SpecializationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(e => e.Department)
+                .WithMany(d => d.Employees)
+                .HasForeignKey(e => e.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(e => e.Manager)
+                .WithMany(e => e.Subordinates)
+                .HasForeignKey(e => e.ManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(e => e.Nationality)
+                .WithMany()
+                .HasForeignKey(e => e.NationalityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(e => e.Country)

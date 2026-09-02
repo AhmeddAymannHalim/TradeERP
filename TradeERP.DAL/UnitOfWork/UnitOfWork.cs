@@ -9,7 +9,9 @@ namespace TradeERP.DAL.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private IDefinitionRepository? _definitions;
+        private IEmployeeRepository? _employees;
+        private ISpecializationRepository? _specializations;
+        private IDepartmentRepository? _departments;
         private ILookupRepository? _lookups;
 
         public UnitOfWork(ApplicationDbContext context)
@@ -17,8 +19,14 @@ namespace TradeERP.DAL.UnitOfWork
             _context = context;
         }
 
-        public IDefinitionRepository Definitions
-            => _definitions ??= new DefinitionRepository(_context);
+        public IEmployeeRepository Employees
+            => _employees ??= new EmployeeRepository(_context);
+
+        public ISpecializationRepository Specializations
+            => _specializations ??= new SpecializationRepository(_context);
+
+        public IDepartmentRepository Departments
+            => _departments ??= new DepartmentRepository(_context);
 
         public ILookupRepository Lookups
             => _lookups ??= new LookupRepository(_context);

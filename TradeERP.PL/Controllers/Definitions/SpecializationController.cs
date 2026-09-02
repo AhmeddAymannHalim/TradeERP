@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using TradeERP.BLL.IServices.Definitions;
 using TradeERP.Shared;
+using TradeERP.Shared.Extensions;
 using TradeERP.Shared.HelperServices.Interfaces;
 using TradeERP.Shared.ViewModels.Commons;
 using TradeERP.Shared.ViewModels.Definitions;
@@ -52,7 +53,7 @@ namespace TradeERP.PL.Controllers.Definitions
         public async Task<IActionResult> Create(SpecializationViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { success = false, errors = ModelStateErrors(), message = _localizer["ValidationError"].Value });
+                return Json(new { success = false, errors = ModelState.ToErrorDictionary(), message = _localizer["ValidationError"].Value });
 
             var result = await _services.AddSpecialization(model);
             if (!result.Success)
@@ -82,7 +83,7 @@ namespace TradeERP.PL.Controllers.Definitions
         public async Task<IActionResult> Update(SpecializationViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { success = false, errors = ModelStateErrors(), message = _localizer["ValidationError"].Value });
+                return Json(new { success = false, errors = ModelState.ToErrorDictionary(), message = _localizer["ValidationError"].Value });
 
             var result = await _services.UpdateSpecialization(model);
             if (!result.Success)
@@ -110,15 +111,6 @@ namespace TradeERP.PL.Controllers.Definitions
             {
                 return Json(new { success = false, errorMessage = _localizer["SomethingWentError"].Value });
             }
-        }
-
-        private Dictionary<string, string[]> ModelStateErrors()
-        {
-            return ModelState
-                .Where(kvp => kvp.Value?.Errors.Count > 0)
-                .ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray());
         }
     }
 }

@@ -20,45 +20,36 @@ namespace TradeERP.BLL.Services.Definitions
 
         public async Task<PaginatedResult<SpecializationViewModel>> GetPagedSpecializations(int pageNo, string? searchString)
         {
-            var result = await _unitOfWork.Definitions.GetPagedSpecializations(pageNo, searchString);
-
-            return new PaginatedResult<SpecializationViewModel>
-            {
-                Data = _mapper.Map<List<SpecializationViewModel>>(result.Data),
-                TotalRecords = result.TotalRecords,
-                PageNo = result.PageNo,
-                PageSize = result.PageSize,
-                NoOfPages = result.NoOfPages,
-                SearchString = result.SearchString
-            };
+            var result = await _unitOfWork.Specializations.GetPagedAsync(pageNo, searchString);
+            return _mapper.Map<PaginatedResult<SpecializationViewModel>>(result);
         }
 
         public async Task<SpecializationViewModel?> GetSpecializationById(int id)
         {
-            var model = await _unitOfWork.Definitions.GetSpecializationById(id);
+            var model = await _unitOfWork.Specializations.GetByIdAsync(id);
             return model == null ? null : _mapper.Map<SpecializationViewModel>(model);
         }
 
         public async Task<int> GetNewSpecializationCodeAsync()
         {
-            return await _unitOfWork.Definitions.GetNewSpecializationCodeAsync();
+            return await _unitOfWork.Specializations.GetNewCodeAsync();
         }
 
         public async Task<ResultMessage> AddSpecialization(SpecializationViewModel viewModel)
         {
             var model = _mapper.Map<Specialization>(viewModel);
-            return await _unitOfWork.Definitions.AddSpecialization(model);
+            return await _unitOfWork.Specializations.AddAsync(model);
         }
 
         public async Task<ResultMessage> UpdateSpecialization(SpecializationViewModel viewModel)
         {
             var model = _mapper.Map<Specialization>(viewModel);
-            return await _unitOfWork.Definitions.UpdateSpecialization(model);
+            return await _unitOfWork.Specializations.UpdateAsync(model);
         }
 
         public async Task<ResultMessage> DeleteSpecialization(int id)
         {
-            return await _unitOfWork.Definitions.DeleteSpecialization(id);
+            return await _unitOfWork.Specializations.DeleteAsync(id);
         }
     }
 }

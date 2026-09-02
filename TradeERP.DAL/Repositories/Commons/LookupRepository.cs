@@ -33,6 +33,19 @@ namespace TradeERP.DAL.Repositories.Commons
                 .Select(a => new LookupItem
                 {
                     Id = a.Id,
+                    ArName = a.ArName + "-" + a.Code,
+                    EnName = a.EnName + "-" + a.Code
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LookupItem>> DepartmentLookupAsync()
+        {
+            return await _context.Departments
+                .Select(a => new LookupItem
+                {
+                    Id = a.Id,
                     ArName = a.ArName,
                     EnName = a.EnName
                 })

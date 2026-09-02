@@ -10,30 +10,30 @@ using TradeERP.Shared.ViewModels.Definitions;
 
 namespace TradeERP.PL.Controllers.Definitions
 {
-    public class EmployeeController : Controller
+    public class DepartmentController : Controller
     {
-        private readonly IEmployeeServices _services;
+        private readonly IDepartmentServices _services;
         private readonly ILookupService _lookupService;
         private readonly IToastrService _toastr;
         private readonly IStringLocalizer<SharedResource> _localizer;
 
-        public EmployeeController(
-            IEmployeeServices services,
+        public DepartmentController(
+            IDepartmentServices services,
             ILookupService lookupService,
-            IStringLocalizer<SharedResource> localizer,
-            IToastrService toastr)
+            IToastrService toastr,
+            IStringLocalizer<SharedResource> localizer)
         {
             _services = services;
             _lookupService = lookupService;
-            _localizer = localizer;
             _toastr = toastr;
+            _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(string searchString, int pageNo = 1)
         {
             try
             {
-                var result = await _services.GetPagedEmployees(pageNo, searchString);
+                var result = await _services.GetPagedDepartments(pageNo, searchString);
                 return View(result);
             }
             catch (Exception ex)
@@ -44,23 +44,23 @@ namespace TradeERP.PL.Controllers.Definitions
 
         public async Task<IActionResult> Create()
         {
-            var newCode = await _services.GetNewEmployeeCodeAsync();
-            var viewModel = new EmployeeViewModel
+            var newCode = await _services.GetNewDepartmentCodeAsync();
+            var model = new DepartmentViewModel
             {
                 Code = newCode.ToString()
             };
 
-            await PopulateData(viewModel);
-            return View(viewModel);
+            await PopulateData(model);
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(EmployeeViewModel model)
+        public async Task<IActionResult> Create(DepartmentViewModel model)
         {
             if (!ModelState.IsValid)
                 return Json(new { success = false, errors = ModelState.ToErrorDictionary(), message = _localizer["ValidationError"].Value });
 
-            var result = await _services.AddEmployee(model);
+            var result = await _services.AddDepartment(model);
             if (!result.Success)
                 return Json(new { success = false, message = result.Message ?? _localizer["ErrorWhileSaving"].Value });
 
@@ -74,7 +74,7 @@ namespace TradeERP.PL.Controllers.Definitions
 
         public async Task<IActionResult> Update(int id)
         {
-            var model = await _services.GetEmployeeById(id);
+            var model = await _services.GetDepartmentById(id);
             if (model == null)
             {
                 _toastr.Error(_localizer["RecordNotFound"]);
@@ -86,12 +86,12 @@ namespace TradeERP.PL.Controllers.Definitions
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(EmployeeViewModel model)
+        public async Task<IActionResult> Update(DepartmentViewModel model)
         {
             if (!ModelState.IsValid)
                 return Json(new { success = false, errors = ModelState.ToErrorDictionary(), message = _localizer["ValidationError"].Value });
 
-            var result = await _services.UpdateEmployee(model);
+            var result = await _services.UpdateDepartment(model);
             if (!result.Success)
                 return Json(new { success = false, message = result.Message ?? _localizer["ErrorWhileUpdating"].Value });
 
@@ -107,7 +107,7 @@ namespace TradeERP.PL.Controllers.Definitions
         {
             try
             {
-                var result = await _services.DeleteEmployee(id);
+                var result = await _services.DeleteDepartment(id);
                 if (result.Success)
                     return Json(new { success = true });
 
@@ -119,24 +119,12 @@ namespace TradeERP.PL.Controllers.Definitions
             }
         }
 
-        private async Task PopulateData(EmployeeViewModel model)
+        private async Task PopulateData(DepartmentViewModel model)
         {
-            model.Specializations = await _lookupService.SpecializationLookupAsync();
-            model.Departments = await _lookupService.DepartmentLookupAsync();
-            model.Managers = (await _lookupService.EmployeeLookupAsync())
-                .Where(e => e.Id != model.Id)
+            model.Managers = await _lookupService.EmployeeLookupAsync();
+            model.ParentDepartments = (await _lookupService.DepartmentLookupAsync())
+                .Where(d => d.Id != model.Id)
                 .ToList();
-            model.Nationalities = await _lookupService.CountryLookupAsync();
-            model.Countries = await _lookupService.CountryLookupAsync();
-
-            if (model.CountryId > 0)
-                model.Govs = await _lookupService.GovLookupByCountryIdAsync(model.CountryId.Value);
-
-            if (model.GovId > 0)
-                model.Towns = await _lookupService.TownLookupByGovIdAsync(model.GovId.Value);
-
-            if (model.TownId > 0)
-                model.Villages = await _lookupService.VillageLookupByTownIdAsync(model.TownId.Value);
         }
     }
 }

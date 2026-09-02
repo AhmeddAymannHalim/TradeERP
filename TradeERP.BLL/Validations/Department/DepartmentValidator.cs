@@ -4,13 +4,13 @@ using TradeERP.BLL.IServices.ICommons;
 using TradeERP.Shared;
 using TradeERP.Shared.ViewModels.Definitions;
 
-namespace TradeERP.BLL.Validations.Employee
+namespace TradeERP.BLL.Validations.Department
 {
-    public class EmployeeValidator : AbstractValidator<EmployeeViewModel>
+    public class DepartmentValidator : AbstractValidator<DepartmentViewModel>
     {
-        public EmployeeValidator(
+        public DepartmentValidator(
             IStringLocalizer<SharedResource> localizer,
-            IValidatorService<DAL.Models.Employee> validator)
+            IValidatorService<TradeERP.DAL.Models.Department> validator)
         {
             RuleFor(x => x.Code)
                 .NotEmpty()
@@ -29,16 +29,6 @@ namespace TradeERP.BLL.Validations.Employee
                 .WithMessage(localizer["Val.RequiredField"])
                 .Must((model, enName) => !validator.IsEnNameExist(model.Id, enName))
                 .WithMessage(localizer["Val.NameAlreadyExist"]);
-
-            RuleFor(x => x.PhoneNumber)
-                .NotEmpty()
-                .WithMessage(localizer["Val.RequiredField"])
-                .Matches(@"^\+[1-9]\d{6,14}$")
-                .WithMessage(localizer["Val.InvalidPhoneNumber"]);
-
-            RuleFor(x => x.NationalId)
-                .NotEmpty()
-                .WithMessage(localizer["Val.RequiredField"]);
         }
     }
 }
