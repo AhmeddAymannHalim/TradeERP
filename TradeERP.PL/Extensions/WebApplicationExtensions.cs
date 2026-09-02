@@ -49,6 +49,10 @@ namespace TradeERP.PL.Extensions
                 var dbContext = services.GetRequiredService<ApplicationDbContext>();
                 await dbContext.Database.MigrateAsync();
                 await DataSeeder.SeedAsync(dbContext);
+
+                var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                await IdentitySeeder.SeedAsync(userManager, roleManager);
             }
             catch (Exception ex)
             {

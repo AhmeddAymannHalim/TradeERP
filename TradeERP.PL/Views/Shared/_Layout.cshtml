@@ -50,25 +50,7 @@
     <script src="https://unpkg.com/tabulator-tables@6.2.5/dist/js/tabulator.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.5.6/build/js/intlTelInput.min.js"></script>
 
-    <script>
-        window.CurrentCulture = "@lang";
-        window.L = {
-            SavedSuccessfully: "@L["SavedSuccessfully"]",
-            UpdatedSuccessfully: "@L["UpdatedSuccessfully"]",
-            ErrorWhileSaving: "@L["ErrorWhileSaving"]",
-            ErrorWhileUpdating: "@L["ErrorWhileUpdating"]",
-            ValidationError: "@L["ValidationError"]",
-            RecordNotFound: "@L["RecordNotFound"]",
-            SomethingWentError: "@L["SomethingWentError"]",
-            DeletedSuccessfully: "@L["DeletedSuccessfully"]",
-            DeleteFailed: "@L["DeleteFailed"]",
-            AreYouSure: "@L["AreYouSure"]",
-            ActionCannotBeUndone: "@L["ActionCannotBeUndone"]",
-            Yes: "@L["Yes"]",
-            Cancel: "@L["Cancel"]",
-            InvalidPhoneNumber: "@L["InvalidPhoneNumber"]"
-        };
-    </script>
+    <partial name="_LocalizationScript" />
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @{

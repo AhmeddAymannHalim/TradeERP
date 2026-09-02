@@ -11,12 +11,18 @@
         <li class="dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                 <i class="bi bi-person-circle"></i>
-                <span class="ms-1">@L["Admin"]</span>
+                <span class="ms-1">@(User.Identity?.Name ?? L["Admin"].Value)</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item disabled" href="#"><i class="bi bi-gear me-2"></i>@L["Settings"]</a></li>
+                <li><a class="dropdown-item" asp-controller="Account" asp-action="Settings"><i class="bi bi-gear me-2"></i>@L["Settings"]</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item disabled" href="#"><i class="bi bi-box-arrow-right me-2"></i>@L["SignOut"]</a></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="px-3">
+                        <button type="submit" class="dropdown-item p-0 border-0 bg-transparent">
+                            <i class="bi bi-box-arrow-right me-2"></i>@L["SignOut"]
+                        </button>
+                    </form>
+                </li>
             </ul>
         </li>
     </ul>

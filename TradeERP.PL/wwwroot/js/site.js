@@ -42,9 +42,22 @@ function initAjaxForms() {
 
                     if (result.success) {
                         showToast(result.message || t('SavedSuccessfully'), 'success');
+
+                        if (result.devResetLink && window.Swal) {
+                            Swal.fire({
+                                title: 'Dev mode: no SMTP configured',
+                                html: 'Email:SmtpHost is empty, so nothing was actually emailed. Use this link to continue testing:<br><br>' +
+                                    '<a href="' + result.devResetLink + '" style="word-break:break-all;">' + result.devResetLink + '</a>',
+                                icon: 'info',
+                                confirmButtonText: 'OK'
+                            });
+                            submitBtn?.removeAttribute('disabled');
+                            return;
+                        }
+
                         setTimeout(() => {
                             if (result.redirectUrl) location.href = result.redirectUrl;
-                        }, 600);
+                        }, 1800);
                     } else {
                         if (result.errors) applyValidationErrors(form, result.errors);
                         showToast(result.message || t('SomethingWentError'), 'error');

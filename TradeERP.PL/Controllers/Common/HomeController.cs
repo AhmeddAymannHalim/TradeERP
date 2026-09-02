@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using TradeERP.Shared.ViewModels.Commons;
@@ -24,6 +25,7 @@ public class HomeController : Controller
         return View();
     }
 
+    [AllowAnonymous]
     public IActionResult SetLanguage(string culture, string returnUrl)
     {
         Response.Cookies.Append(
@@ -34,6 +36,7 @@ public class HomeController : Controller
         return LocalRedirect(returnUrl);
     }
 
+    [AllowAnonymous]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

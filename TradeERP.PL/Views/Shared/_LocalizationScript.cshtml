@@ -1,0 +1,26 @@
+@using System.Globalization
+@{
+    var isArabic = CultureInfo.CurrentUICulture.Name.StartsWith("ar");
+    var lang = isArabic ? "ar" : "en";
+}
+<script>
+    window.CurrentCulture = "@lang";
+    window.L = {
+        SavedSuccessfully: "@L["SavedSuccessfully"]",
+        UpdatedSuccessfully: "@L["UpdatedSuccessfully"]",
+        ErrorWhileSaving: "@L["ErrorWhileSaving"]",
+        ErrorWhileUpdating: "@L["ErrorWhileUpdating"]",
+        ValidationError: "@L["ValidationError"]",
+        RecordNotFound: "@L["RecordNotFound"]",
+        SomethingWentError: "@L["SomethingWentError"]",
+        DeletedSuccessfully: "@L["DeletedSuccessfully"]",
+        DeleteFailed: "@L["DeleteFailed"]",
+        AreYouSure: "@L["AreYouSure"]",
+        ActionCannotBeUndone: "@L["ActionCannotBeUndone"]",
+        Yes: "@L["Yes"]",
+        Cancel: "@L["Cancel"]",
+        InvalidPhoneNumber: "@L["InvalidPhoneNumber"]",
+        InvalidLoginAttempt: "@L["InvalidLoginAttempt"]",
+        AccountLockedOut: "@L["AccountLockedOut"]"
+    };
+</script>

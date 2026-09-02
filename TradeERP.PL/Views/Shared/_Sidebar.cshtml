@@ -13,6 +13,17 @@
                 </a>
             </li>
 
+            @if (User.IsInRole("Admin"))
+            {
+                <li class="side-nav-title">@L["Administration"]</li>
+                <li>
+                    <a asp-controller="Users" asp-action="Index">
+                        <i class="bi bi-person-gear text-primary"></i>
+                        <span>@L["Users"]</span>
+                    </a>
+                </li>
+            }
+
             <li class="side-nav-title">@L["Modules"]</li>
 
             <li>
