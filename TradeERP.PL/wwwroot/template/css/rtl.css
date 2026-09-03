@@ -1,0 +1,67 @@
+html[dir="rtl"] .sidebar {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid #e5e5e5;
+    transition: width .3s, right .3s;
+}
+
+html[dir="rtl"] .sidebar .logo-area {
+    left: auto;
+    right: 0;
+    padding-left: 0;
+    padding-right: 17px;
+}
+
+html[dir="rtl"] .sidebar .nav-link .ti,
+html[dir="rtl"] .sidebar .nav-link i {
+    margin-right: 0;
+}
+
+html[dir="rtl"] .topbar {
+    margin-left: 0;
+    margin-right: 240px;
+}
+
+html[dir="rtl"] .topbar.full {
+    margin-left: 0;
+    margin-right: 60px;
+}
+
+html[dir="rtl"] .content {
+    margin-left: 0;
+    margin-right: 240px;
+}
+
+html[dir="rtl"] .content.full {
+    margin-left: 0;
+    margin-right: 60px;
+}
+
+html[dir="rtl"] .overlay {
+    left: 0;
+    right: 0;
+}
+
+@media (max-width: 992px) {
+    html[dir="rtl"] .sidebar {
+        right: -240px;
+        left: auto;
+    }
+
+    html[dir="rtl"] .sidebar.mobile-show {
+        right: 0;
+        left: auto;
+    }
+
+    html[dir="rtl"] .topbar {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+
+    html[dir="rtl"] .content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}

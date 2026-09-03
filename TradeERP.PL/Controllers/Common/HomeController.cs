@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using TradeERP.BLL.IServices.Definitions;
 using TradeERP.Shared.ViewModels.Commons;
 
 namespace TradeERP.PL.Controllers.Common;
@@ -9,15 +10,18 @@ namespace TradeERP.PL.Controllers.Common;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IReportsServices _reportsServices;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IReportsServices reportsServices)
     {
         _logger = logger;
+        _reportsServices = reportsServices;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var summary = await _reportsServices.GetDashboardSummaryAsync();
+        return View(summary);
     }
 
     public IActionResult Privacy()

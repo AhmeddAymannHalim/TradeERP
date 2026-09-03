@@ -12,7 +12,30 @@ document.addEventListener('DOMContentLoaded', function () {
     initPhoneInputs();
     initLocationCascade();
     initAjaxForms();
+    initThemeToggle();
 });
+
+function initThemeToggle() {
+    var themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (!themeToggleBtn) return;
+
+    updateThemeToggleIcon();
+
+    themeToggleBtn.addEventListener('click', function () {
+        var current = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-bs-theme', next);
+        localStorage.setItem('theme', next);
+        updateThemeToggleIcon();
+    });
+}
+
+function updateThemeToggleIcon() {
+    var icon = document.getElementById('themeToggleIcon');
+    if (!icon) return;
+    var isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+    icon.className = isDark ? 'ti ti-sun' : 'ti ti-moon';
+}
 
 function initAjaxForms() {
     document.querySelectorAll('form').forEach(form => {

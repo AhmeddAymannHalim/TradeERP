@@ -1,3 +1,5 @@
+using TradeERP.Shared.Enums;
+
 namespace TradeERP.Shared.ViewModels.Definitions
 {
     public class LedgerAccountViewModel
@@ -6,6 +8,6 @@ namespace TradeERP.Shared.ViewModels.Definitions
         public string Code { get; set; } = string.Empty;
         public string ArName { get; set; } = string.Empty;
         public string EnName { get; set; } = string.Empty;
-        public string AccountType { get; set; } = string.Empty;
+        public AccountType AccountType { get; set; }
     }
 }

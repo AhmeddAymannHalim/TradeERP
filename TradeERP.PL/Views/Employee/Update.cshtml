@@ -5,17 +5,16 @@
     bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
 }
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-xl-10">
-            <form asp-action="Update">
-                <input type="hidden" asp-for="Id" />
-                <div class="card shadow-sm">
-                    <div class="card-header text-center">
-                        <h4 class="fw-bold m-0">@L["EditEmployee"]</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3 align-items-center justify-content-center">
+<div class="row justify-content-center">
+    <div class="col-xl-10">
+        <form asp-action="Update">
+            <input type="hidden" asp-for="Id" />
+            <div class="card">
+                <div class="card-header bg-transparent px-4 py-3">
+                    <h4 class="mb-0 h5">@L["EditEmployee"]</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3 align-items-center justify-content-center">
                     <div class="col-lg-4 col-md-6">
                         <label asp-for="Code" class="form-label">@L["Code"]</label>
                         <input asp-for="Code" class="form-control" />
@@ -199,15 +198,14 @@
                             <label asp-for="IsActive" class="form-check-label">@L["IsActive"]</label>
                         </div>
                     </div>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-center gap-2">
-                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
-                        <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
                     </div>
                 </div>
-            </form>
-        </div>
+                <div class="card-footer d-flex justify-content-center gap-2 bg-transparent">
+                    <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

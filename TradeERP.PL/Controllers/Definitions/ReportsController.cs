@@ -44,5 +44,29 @@ namespace TradeERP.PL.Controllers.Definitions
             var rows = await _services.GetStockValuation();
             return View(rows);
         }
-    }
+
+        public async Task<IActionResult> BillSales()
+        {
+            var rows = await _services.GetBillSalesAsync();
+            return View(rows);
+        }
+
+        public async Task<IActionResult> BillSalesReturn()
+        {
+            var rows = await _services.GetBillSalesReturnAsync();
+            return View(rows);
+        }
+
+        public async Task<IActionResult> BillPurchases()
+        {
+            var rows = await _services.GetBillPurchasesAsync();
+            return View(rows);
+        }
+
+        public async Task<IActionResult> BillReturnPurchases()
+        {
+            var rows = await _services.GetBillReturnPurchasesAsync();
+            return View(rows);
+        }
+    } 
 }

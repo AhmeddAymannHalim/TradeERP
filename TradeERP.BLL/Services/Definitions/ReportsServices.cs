@@ -1,5 +1,6 @@
 using TradeERP.BLL.IServices.Definitions;
 using TradeERP.DAL.UnitOfWork;
+using TradeERP.Shared.ViewModels.Definitions;
 using TradeERP.Shared.ViewModels.Definitions.Reports;
 
 namespace TradeERP.BLL.Services.Definitions
@@ -26,6 +27,30 @@ namespace TradeERP.BLL.Services.Definitions
         public async Task<List<StockValuationRowViewModel>> GetStockValuation()
         {
             return await _unitOfWork.Reports.GetStockValuationAsync();
+        }
+
+        public async Task<List<BillMasterViewModel>> GetBillSalesAsync()
+        {
+            return await _unitOfWork.Reports.GetBillSalesAsync();
+        }
+
+        public async Task<List<BillMasterViewModel>> GetBillSalesReturnAsync()
+        {
+            return await _unitOfWork.Reports.GetBillSalesReturnAsync();
+        }
+        public async Task<List<BillMasterViewModel>> GetBillPurchasesAsync()
+        {
+            return await _unitOfWork.Reports.GetBillPurchasesAsync();
+        }
+        
+        public async Task<List<BillMasterViewModel>> GetBillReturnPurchasesAsync()
+        {
+            return await _unitOfWork.Reports.GetBillReturnPurchasesAsync();
+        }
+
+        public async Task<DashboardSummaryViewModel> GetDashboardSummaryAsync()
+        {
+            return await _unitOfWork.Reports.GetDashboardSummaryAsync();
         }
     }
 }

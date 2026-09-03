@@ -1033,9 +1033,8 @@ namespace TradeERP.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AccountType")
+                        .HasColumnType("int");
 
                     b.Property<string>("ArName")
                         .IsRequired()

@@ -13,7 +13,11 @@ namespace TradeERP.Shared.ViewModels.Definitions
         public bool IsPosted { get; set; }
 
         public int? CustomerId { get; set; }
+        public string CustomerArName { get; set; } = string.Empty;
+        public string CustomerEnName { get; set; } = string.Empty;
         public int? SupplierId { get; set; }
+        public string SupplierArName { get; set; } = string.Empty;
+        public string SupplierEnName { get; set; } = string.Empty;
 
         public List<LookupItem> Customers { get; set; } = new List<LookupItem>();
         public List<LookupItem> Suppliers { get; set; } = new List<LookupItem>();

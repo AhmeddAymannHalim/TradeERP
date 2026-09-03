@@ -5,16 +5,15 @@
     bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
 }
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-xl-11">
-            <form asp-action="Update" id="billForm">
-                <input type="hidden" asp-for="Id" />
-                <div class="card shadow-sm">
-                    <div class="card-header text-center">
-                        <h4 class="fw-bold m-0">@L["EditBillMaster"]</h4>
-                    </div>
-                    <div class="card-body">
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <form asp-action="Update" id="billForm">
+            <input type="hidden" asp-for="Id" />
+            <div class="card">
+                <div class="card-header bg-transparent px-4 py-3">
+                    <h4 class="mb-0 h5">@L["EditBillMaster"]</h4>
+                </div>
+                <div class="card-body p-4">
                         @if (Model.IsPosted)
                         {
                             <div class="alert alert-warning">@L["BillAlreadyPosted"]</div>
@@ -72,9 +71,9 @@
                                 </button>
                             </div>
 
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle" id="linesTable">
-                                    <thead>
+                            <div class="card table-responsive">
+                                <table class="table mb-0 text-nowrap table-hover" id="linesTable">
+                                    <thead class="table-light border-light">
                                         <tr>
                                             <th>@L["Product"]</th>
                                             <th style="width:120px">@L["Quantity"]</th>
@@ -109,24 +108,23 @@
                                 }
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-center gap-2">
-                        @if (!Model.IsPosted)
-                        {
-                            <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
-                            <a href="javascript:void(0)" onclick="postBill(@Model.Id)" class="btn btn-success px-5">@L["Post"]</a>
-                        }
-                        else
-                        {
-                            <a href="javascript:void(0)" onclick="viewJournalEntry(@Model.Id)" class="btn btn-info px-5">
-                                <i class="bi bi-journal-text"></i> @L["JournalEntry"]
-                            </a>
-                        }
-                        <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
-                    </div>
                 </div>
-            </form>
-        </div>
+                <div class="card-footer d-flex justify-content-center gap-2 bg-transparent">
+                    @if (!Model.IsPosted)
+                    {
+                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                        <a href="javascript:void(0)" onclick="postBill(@Model.Id)" class="btn btn-success px-5">@L["Post"]</a>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0)" onclick="viewJournalEntry(@Model.Id)" class="btn btn-info px-5">
+                            <i class="bi bi-journal-text"></i> @L["JournalEntry"]
+                        </a>
+                    }
+                    <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

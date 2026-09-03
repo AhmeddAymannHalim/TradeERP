@@ -1,0 +1,52 @@
+@using System.Globalization
+@model List<BillMasterViewModel>
+@{
+    ViewBag.Title = L["BillReturnPurchases"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card table-responsive">
+            <table class="table mb-0 text-nowrap table-hover">
+                <thead class="table-light border-light">
+                    <tr>
+                        <th>@L["Supplier"]</th>
+                        <th>@L["Amount"]</th>
+                        <th>@L["MovementDate"]</th>
+                        <th>@L["BillType"]</th>
+                        <th>@L["IsPosted"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        foreach (var row in Model)
+                        {
+                            <tr class="align-middle">
+                                <td>@(isArabicCulture ? @row.SupplierArName : @row.SupplierEnName) </td>
+                                <td>@row.Amount</td>
+                                <td>@row.BillDate</td>
+                                <td>@L[row.BillType.ToString()]</td>
+                                @if (row.IsPosted)
+                                {
+                                    <td class="text-success">@L["Yes"]</td>
+                                }
+                                else
+                                {
+                                    <td class="text-danger">@L["No"]</td>
+                                }
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center">@L["NoData"]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

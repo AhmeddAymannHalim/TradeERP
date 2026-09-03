@@ -17,7 +17,7 @@
     string PageUrl(int page)
     {
         var rv = new Dictionary<string, string>(routeValues) { ["pageNo"] = page.ToString() };
-        return Url.Action(actionName, rv);
+        return Url.Action(actionName, rv) ?? "#";
     }
 
     const int window = 2;

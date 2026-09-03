@@ -1,143 +1,93 @@
-<div class="left-side-menu">
-    <a class="logo-box" asp-controller="Home" asp-action="Index">
-        <i class="bi bi-boxes"></i>
-        <span>TradeERP</span>
-    </a>
+@{
+    string CurrentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    string CurrentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
 
-    <div id="sidebar-menu">
-        <ul id="side-menu">
-            <li>
-                <a asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-speedometer2 text-primary"></i>
-                    <span>@L["Dashboard"]</span>
-                </a>
-            </li>
+    string IsActive(string controller, string? action = null)
+    {
+        if (!string.Equals(CurrentController, controller, StringComparison.OrdinalIgnoreCase))
+            return "";
 
-            @if (User.IsInRole("Admin"))
-            {
-                <li class="side-nav-title">@L["Administration"]</li>
-                <li>
-                    <a asp-controller="Users" asp-action="Index">
-                        <i class="bi bi-person-gear text-primary"></i>
-                        <span>@L["Users"]</span>
-                    </a>
-                </li>
-                <li>
-                    <a asp-controller="AccountingPeriod" asp-action="Index">
-                        <i class="bi bi-calendar-check text-primary"></i>
-                        <span>@L["AccountingPeriodList"]</span>
-                    </a>
-                </li>
-            }
+        if (action != null && !string.Equals(CurrentAction, action, StringComparison.OrdinalIgnoreCase))
+            return "";
 
-            <li class="side-nav-title">@L["Modules"]</li>
-
-            <li>
-                <a href="#definitionsMenu" data-bs-toggle="collapse" aria-expanded="true">
-                    <i class="bi bi-card-list text-warning"></i>
-                    <span>@L["Definitions"]</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse show" id="definitionsMenu">
-                    <ul class="nav-second-level">
-                        <li><a asp-controller="Employee" asp-action="Index">@L["Employees"]</a></li>
-                        <li><a asp-controller="Specialization" asp-action="Index">@L["Specializations"]</a></li>
-                        <li><a asp-controller="Department" asp-action="Index">@L["Departments"]</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li>
-                <a href="#reportsMenu" data-bs-toggle="collapse" aria-expanded="true">
-                    <i class="bi bi-bar-chart-line text-info"></i>
-                    <span>@L["Reports"]</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse show" id="reportsMenu">
-                    <ul class="nav-second-level">
-                        <li><a asp-controller="Reports" asp-action="TrialBalance">@L["TrialBalance"]</a></li>
-                        <li><a asp-controller="Reports" asp-action="StatementOfAccount">@L["StatementOfAccount"]</a></li>
-                        <li><a asp-controller="Reports" asp-action="StockValuation">@L["StockValuation"]</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li>
-                <a href="#inventoryMenu" data-bs-toggle="collapse">
-                    <i class="bi bi-box-seam text-success"></i>
-                    <span>@L["Inventory"]</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="inventoryMenu">
-                    <ul class="nav-second-level">
-                        <li><a asp-controller="Category" asp-action="Index">@L["CategoryList"]</a></li>
-                        <li><a asp-controller="Product" asp-action="Index">@L["ProductList"]</a></li>
-                        <li><a asp-controller="StockLedger" asp-action="Index">@L["StockLedgerList"]</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li>
-                <a href="#salesMenu" data-bs-toggle="collapse">
-                    <i class="bi bi-cart-check text-danger"></i>
-                    <span>@L["Sales"]</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="salesMenu">
-                    <ul class="nav-second-level">
-                        <li><a asp-controller="Customer" asp-action="Index">@L["CustomerList"]</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li>
-                <a href="#purchasingMenu" data-bs-toggle="collapse">
-                    <i class="bi bi-truck text-warning"></i>
-                    <span>@L["Purchasing"]</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="purchasingMenu">
-                    <ul class="nav-second-level">
-                        <li><a asp-controller="Supplier" asp-action="Index">@L["SupplierList"]</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li>
-                <a href="#accountingMenu" data-bs-toggle="collapse">
-                    <i class="bi bi-calculator text-dark"></i>
-                    <span>@L["Accounting"]</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="accountingMenu">
-                    <ul class="nav-second-level">
-                        <li><a asp-controller="LedgerAccount" asp-action="Index">@L["LedgerAccountList"]</a></li>
-                        <li><a asp-controller="BillMaster" asp-action="Index">@L["BillMasterList"]</a></li>
-                        <li><a asp-controller="BillDetails" asp-action="Index">@L["BillDetailsList"]</a></li>
-                        <li><a asp-controller="EntryMaster" asp-action="Index">@L["EntryMasterList"]</a></li>
-                        <li><a asp-controller="EntryDetails" asp-action="Index">@L["EntryDetailsList"]</a></li>
-                        <li><a asp-controller="BillSetting" asp-action="Index">@L["BillSettingList"]</a></li>
-                        <li><a asp-controller="EntrySetting" asp-action="Index">@L["EntrySettingList"]</a></li>
-                        <li><a asp-controller="VoucherMaster" asp-action="Index">@L["VoucherMasterList"]</a></li>
-                        <li><a asp-controller="OpeningBalance" asp-action="Create">@L["InsertNewOpeningBalance"]</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="side-nav-title">@L["Upcoming"]</li>
-
-            <li>
-                <a href="#hrMenu" data-bs-toggle="collapse">
-                    <i class="bi bi-people text-secondary"></i>
-                    <span>@L["HR"]</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="hrMenu">
-                    <ul class="nav-second-level">
-                        <li><a class="disabled" href="#">@L["Payroll"]</a></li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
+        return "active";
+    }
+}
+<aside id="sidebar" class="sidebar">
+    <div class="logo-area">
+        <a asp-controller="Home" asp-action="Index" class="d-inline-flex align-items-center text-decoration-none">
+            <i class="ti ti-building-store fs-4 text-primary"></i>
+            <span class="logo-text ms-2 fw-bold text-dark">TradeERP</span>
+        </a>
     </div>
-</div>
+
+    <div class="sidebar-nav-scroll">
+    <ul class="nav flex-column">
+        <li class="px-4 py-2"><small class="nav-text">@L["Main"]</small></li>
+        <li>
+            <a class="nav-link @IsActive("Home")" asp-controller="Home" asp-action="Index">
+                <i class="ti ti-layout-dashboard"></i><span class="nav-text">@L["Dashboard"]</span>
+            </a>
+        </li>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <li class="px-4 pt-4 pb-2"><small class="nav-text">@L["Administration"]</small></li>
+            <li>
+                <a class="nav-link @IsActive("Users", "Index")" asp-controller="Users" asp-action="Index">
+                    <i class="ti ti-user-cog"></i><span class="nav-text">@L["Users"]</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link @IsActive("AccountingPeriod", "Index")" asp-controller="AccountingPeriod" asp-action="Index">
+                    <i class="ti ti-calendar-check"></i><span class="nav-text">@L["AccountingPeriodList"]</span>
+                </a>
+            </li>
+        }
+
+        <li class="px-4 pt-4 pb-2"><small class="nav-text">@L["Definitions"]</small></li>
+        <li><a class="nav-link @IsActive("Employee", "Index")" asp-controller="Employee" asp-action="Index"><i class="ti ti-users"></i><span class="nav-text">@L["Employees"]</span></a></li>
+        <li><a class="nav-link @IsActive("Customer", "Index")" asp-controller="Customer" asp-action="Index"><i class="ti ti-user-heart"></i><span class="nav-text">@L["CustomerList"]</span></a></li>
+        <li><a class="nav-link @IsActive("Supplier", "Index")" asp-controller="Supplier" asp-action="Index"><i class="ti ti-truck-delivery"></i><span class="nav-text">@L["SupplierList"]</span></a></li>
+        <li><a class="nav-link @IsActive("Specialization", "Index")" asp-controller="Specialization" asp-action="Index"><i class="ti ti-briefcase"></i><span class="nav-text">@L["Specializations"]</span></a></li>
+        <li><a class="nav-link @IsActive("Department", "Index")" asp-controller="Department" asp-action="Index"><i class="ti ti-sitemap"></i><span class="nav-text">@L["Departments"]</span></a></li>
+        <li><a class="nav-link @IsActive("Category", "Index")" asp-controller="Category" asp-action="Index"><i class="ti ti-category"></i><span class="nav-text">@L["CategoryList"]</span></a></li>
+        <li><a class="nav-link @IsActive("Product", "Index")" asp-controller="Product" asp-action="Index"><i class="ti ti-package"></i><span class="nav-text">@L["ProductList"]</span></a></li>
+        <li><a class="nav-link @IsActive("LedgerAccount", "Index")" asp-controller="LedgerAccount" asp-action="Index"><i class="ti ti-book-2"></i><span class="nav-text">@L["LedgerAccountList"]</span></a></li>
+
+        <li class="px-4 pt-4 pb-2"><small class="nav-text">@L["Inventory"]</small></li>
+        <li><a class="nav-link @IsActive("StockLedger", "Index")" asp-controller="StockLedger" asp-action="Index"><i class="ti ti-box-seam"></i><span class="nav-text">@L["StockLedgerList"]</span></a></li>
+        <li><a class="nav-link @IsActive("Reports", "StockValuation")" asp-controller="Reports" asp-action="StockValuation"><i class="ti ti-report-money"></i><span class="nav-text">@L["StockValuation"]</span></a></li>
+
+        <li class="px-4 pt-4 pb-2"><small class="nav-text">@L["SalesAndPurchasing"]</small></li>
+        <li><a class="nav-link @IsActive("BillMaster", "Index")" asp-controller="BillMaster" asp-action="Index"><i class="ti ti-file-invoice"></i><span class="nav-text">@L["BillMasterList"]</span></a></li>
+        <li><a class="nav-link @IsActive("Reports", "BillSales")" asp-controller="Reports" asp-action="BillSales"><i class="ti ti-receipt"></i><span class="nav-text">@L["BillSales"]</span></a></li>
+        <li><a class="nav-link @IsActive("Reports", "BillSalesReturn")" asp-controller="Reports" asp-action="BillSalesReturn"><i class="ti ti-receipt-refund"></i><span class="nav-text">@L["BillSalesReturn"]</span></a></li>
+        <li><a class="nav-link @IsActive("Reports", "BillPurchases")" asp-controller="Reports" asp-action="BillPurchases"><i class="ti ti-shopping-cart"></i><span class="nav-text">@L["BillPurchases"]</span></a></li>
+        <li><a class="nav-link @IsActive("Reports", "BillReturnPurchases")" asp-controller="Reports" asp-action="BillReturnPurchases"><i class="ti ti-rotate"></i><span class="nav-text">@L["BillReturnPurchases"]</span></a></li>
+
+        <li class="px-4 pt-4 pb-2"><small class="nav-text">@L["Accounting"]</small></li>
+        <li><a class="nav-link @IsActive("EntryMaster", "Index")" asp-controller="EntryMaster" asp-action="Index"><i class="ti ti-notebook"></i><span class="nav-text">@L["EntryMasterList"]</span></a></li>
+        <li><a class="nav-link @IsActive("VoucherMaster", "Index")" asp-controller="VoucherMaster" asp-action="Index"><i class="ti ti-cash-banknote"></i><span class="nav-text">@L["VoucherMasterList"]</span></a></li>
+        <li><a class="nav-link @IsActive("OpeningBalance", "Create")" asp-controller="OpeningBalance" asp-action="Create"><i class="ti ti-scale"></i><span class="nav-text">@L["InsertNewOpeningBalance"]</span></a></li>
+        <li><a class="nav-link @IsActive("Reports", "TrialBalance")" asp-controller="Reports" asp-action="TrialBalance"><i class="ti ti-chart-bar"></i><span class="nav-text">@L["TrialBalance"]</span></a></li>
+        <li><a class="nav-link @IsActive("Reports", "StatementOfAccount")" asp-controller="Reports" asp-action="StatementOfAccount"><i class="ti ti-file-text"></i><span class="nav-text">@L["StatementOfAccount"]</span></a></li>
+
+        <li>
+            <a class="nav-link collapsed" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#advancedMenu" aria-expanded="false">
+                <i class="ti ti-adjustments"></i><span class="nav-text">@L["Advanced"]</span>
+                <i class="ti ti-chevron-down nav-chevron"></i>
+            </a>
+            <ul class="nav flex-column collapse" id="advancedMenu">
+                <li><a class="nav-link @IsActive("BillSetting", "Index")" asp-controller="BillSetting" asp-action="Index">@L["BillSettingList"]</a></li>
+                <li><a class="nav-link @IsActive("EntrySetting", "Index")" asp-controller="EntrySetting" asp-action="Index">@L["EntrySettingList"]</a></li>
+                <li><a class="nav-link @IsActive("BillDetails", "Index")" asp-controller="BillDetails" asp-action="Index">@L["BillDetailsList"]</a></li>
+                <li><a class="nav-link @IsActive("EntryDetails", "Index")" asp-controller="EntryDetails" asp-action="Index">@L["EntryDetailsList"]</a></li>
+            </ul>
+        </li>
+
+        <li class="px-4 pt-4 pb-2"><small class="nav-text">@L["Upcoming"]</small></li>
+        <li><a class="nav-link disabled" href="javascript:void(0)" aria-disabled="true" tabindex="-1"><i class="ti ti-users-group"></i><span class="nav-text">@L["HR"]</span></a></li>
+    </ul>
+    </div>
+</aside>
