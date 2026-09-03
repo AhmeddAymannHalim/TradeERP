@@ -1,0 +1,9 @@
+.badge.bg-success,
+.btn.btn-success {
+    color: #0a2e15;
+}
+
+.badge.bg-warning,
+.btn.btn-warning {
+    color: #3d2b00;
+}

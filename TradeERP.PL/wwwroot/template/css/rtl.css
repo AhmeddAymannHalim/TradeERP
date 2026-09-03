@@ -20,7 +20,7 @@ html[dir="rtl"] .sidebar .nav-link i {
 
 html[dir="rtl"] .topbar {
     margin-left: 0;
-    margin-right: 240px;
+    margin-right: 272px;
 }
 
 html[dir="rtl"] .topbar.full {
@@ -30,7 +30,7 @@ html[dir="rtl"] .topbar.full {
 
 html[dir="rtl"] .content {
     margin-left: 0;
-    margin-right: 240px;
+    margin-right: 272px;
 }
 
 html[dir="rtl"] .content.full {
@@ -45,7 +45,7 @@ html[dir="rtl"] .overlay {
 
 @media (max-width: 992px) {
     html[dir="rtl"] .sidebar {
-        right: -240px;
+        right: -272px;
         left: auto;
     }
 

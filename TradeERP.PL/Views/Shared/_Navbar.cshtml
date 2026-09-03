@@ -20,7 +20,7 @@
             <li class="ms-2 dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                     <i class="ti ti-user-circle fs-5"></i>
-                    <span class="ms-1">@(User.Identity?.Name ?? L["Admin"].Value)</span>
+                    <span class="ms-1 d-none d-md-inline text-truncate" style="max-width: 160px;">@(User.Identity?.Name ?? L["Admin"].Value)</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" asp-controller="Account" asp-action="Settings"><i class="ti ti-settings me-2"></i>@L["Settings"]</a></li>
