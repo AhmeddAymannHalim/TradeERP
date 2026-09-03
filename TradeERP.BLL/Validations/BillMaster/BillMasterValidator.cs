@@ -28,6 +28,18 @@ namespace TradeERP.BLL.Validations.BillMaster
                     : x.CustomerId.HasValue)
                 .WithMessage(localizer["Val.RequiredField"])
                 .OverridePropertyName(nameof(BillMasterViewModel.CustomerId));
+
+            RuleFor(x => x.Lines)
+                .NotEmpty()
+                .WithMessage(localizer["Val.RequiredField"])
+                .OverridePropertyName(nameof(BillMasterViewModel.Lines));
+
+            RuleForEach(x => x.Lines).ChildRules(line =>
+            {
+                line.RuleFor(l => l.ProductId).GreaterThan(0).WithMessage(localizer["Val.RequiredField"]);
+                line.RuleFor(l => l.Quantity).GreaterThan(0).WithMessage(localizer["Val.RequiredField"]);
+                line.RuleFor(l => l.UnitPrice).GreaterThan(0).WithMessage(localizer["Val.RequiredField"]);
+            });
         }
     }
 }

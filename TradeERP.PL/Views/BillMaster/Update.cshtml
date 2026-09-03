@@ -7,8 +7,8 @@
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-xl-9">
-            <form asp-action="Update">
+        <div class="col-xl-11">
+            <form asp-action="Update" id="billForm">
                 <input type="hidden" asp-for="Id" />
                 <div class="card shadow-sm">
                     <div class="card-header text-center">
@@ -41,7 +41,7 @@
                                     </select>
                                     <span asp-validation-for="BillType" class="text-danger"></span>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label asp-for="CustomerId" class="form-label">@L["Customer"]</label>
                                     <select asp-for="CustomerId" class="form-select">
                                         <option value="">@L["Choose"]</option>
@@ -51,7 +51,7 @@
                                         }
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label asp-for="SupplierId" class="form-label">@L["Supplier"]</label>
                                     <select asp-for="SupplierId" class="form-select">
                                         <option value="">@L["Choose"]</option>
@@ -61,23 +61,54 @@
                                         }
                                     </select>
                                 </div>
-                                <div class="col-md-4">
-                                    <label asp-for="Amount" class="form-label">@L["Amount"]</label>
-                                    <input asp-for="Amount" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label d-block">@L["PostingStatus"]</label>
-                                    @if (Model.IsPosted)
-                                    {
-                                        <span class="badge bg-success">@L["Posted"]</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">@L["Draft"]</span>
-                                    }
-                                </div>
                             </div>
+
+                            <hr class="my-4" />
+
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="fw-bold m-0">@L["Bill"] @L["Description"]</h5>
+                                <button type="button" id="addLineBtn" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-plus-lg"></i> @L["New"]
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered align-middle" id="linesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>@L["Product"]</th>
+                                            <th style="width:120px">@L["Quantity"]</th>
+                                            <th style="width:140px">@L["UnitPrice"]</th>
+                                            <th style="width:140px">@L["LineTotal"]</th>
+                                            <th style="width:60px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="linesBody"></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end fw-bold">@L["Amount"]</td>
+                                            <td class="fw-bold" id="grandTotal">0.00</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <span id="linesValidation" class="text-danger"></span>
                         </fieldset>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-4">
+                                <label class="form-label d-block">@L["PostingStatus"]</label>
+                                @if (Model.IsPosted)
+                                {
+                                    <span class="badge bg-success">@L["Posted"]</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@L["Draft"]</span>
+                                }
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer d-flex justify-content-center gap-2">
                         @if (!Model.IsPosted)
@@ -98,6 +129,85 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        const productOptions = [
+            { id: '', text: '@L["Choose"]' },
+            @foreach (var item in Model.Products)
+            {
+                @: { id: '@item.Id', text: '@Html.Raw((isArabicCulture ? item.ArName : item.EnName).Replace("'", "\\'"))' },
+            }
+        ];
+
+        const existingLines = [
+            @foreach (var line in Model.Lines)
+            {
+                @: { productId: '@line.ProductId', quantity: @line.Quantity, unitPrice: @line.UnitPrice, lineTotal: @line.LineTotal },
+            }
+        ];
+
+        let lineIndex = 0;
+
+        function buildProductOptions(selectedId) {
+            return productOptions.map(o =>
+                `<option value="${o.id}" ${String(o.id) === String(selectedId) ? 'selected' : ''}>${o.text}</option>`
+            ).join('');
+        }
+
+        function addLine(data) {
+            data = data || {};
+            const idx = lineIndex++;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <select class="form-select" name="Lines[${idx}].ProductId">${buildProductOptions(data.productId)}</select>
+                </td>
+                <td><input type="number" step="0.01" class="form-control line-qty" name="Lines[${idx}].Quantity" value="${data.quantity || ''}" /></td>
+                <td><input type="number" step="0.01" class="form-control line-price" name="Lines[${idx}].UnitPrice" value="${data.unitPrice || ''}" /></td>
+                <td><input type="text" class="form-control line-total" name="Lines[${idx}].LineTotal" value="${(data.lineTotal || 0).toFixed(2)}" readonly /></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-sm remove-line"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+            document.getElementById('linesBody').appendChild(row);
+
+            row.querySelector('.line-qty').addEventListener('input', () => recalcRow(row));
+            row.querySelector('.line-price').addEventListener('input', () => recalcRow(row));
+            row.querySelector('.remove-line').addEventListener('click', () => {
+                row.remove();
+                recalcGrandTotal();
+            });
+        }
+
+        function recalcRow(row) {
+            const qty = parseFloat(row.querySelector('.line-qty').value) || 0;
+            const price = parseFloat(row.querySelector('.line-price').value) || 0;
+            row.querySelector('.line-total').value = (qty * price).toFixed(2);
+            recalcGrandTotal();
+        }
+
+        function recalcGrandTotal() {
+            let total = 0;
+            document.querySelectorAll('#linesBody .line-total').forEach(el => {
+                total += parseFloat(el.value) || 0;
+            });
+            document.getElementById('grandTotal').textContent = total.toFixed(2);
+        }
+
+        document.getElementById('addLineBtn').addEventListener('click', () => addLine());
+
+        document.getElementById('billForm').addEventListener('submit', function (e) {
+            if (document.querySelectorAll('#linesBody tr').length === 0) {
+                e.preventDefault();
+                document.getElementById('linesValidation').textContent = '@L["Val.RequiredField"]';
+            }
+        });
+
+        if (existingLines.length > 0) {
+            existingLines.forEach(l => addLine(l));
+        } else {
+            addLine();
+        }
+        recalcGrandTotal();
+
         function postBill(id) {
             fetch('/BillMaster/Post/' + id, { method: 'GET' })
                 .then(r => r.json())

@@ -25,20 +25,22 @@ namespace TradeERP.BLL.Services.Definitions
 
         public async Task<BillMasterViewModel?> GetBillMasterById(int id)
         {
-            var model = await _unitOfWork.BillMasters.GetByIdAsync(id);
+            var model = await _unitOfWork.BillMasters.GetByIdWithDetailsAsync(id);
             return model == null ? null : _mapper.Map<BillMasterViewModel>(model);
         }
 
         public async Task<ResultMessage> AddBillMaster(BillMasterViewModel viewModel)
         {
             var model = _mapper.Map<TradeERP.DAL.Models.BillMaster>(viewModel);
-            return await _unitOfWork.BillMasters.AddAsync(model);
+            var lines = _mapper.Map<List<TradeERP.DAL.Models.BillDetails>>(viewModel.Lines);
+            return await _unitOfWork.BillMasters.AddWithDetailsAsync(model, lines);
         }
 
         public async Task<ResultMessage> UpdateBillMaster(BillMasterViewModel viewModel)
         {
             var model = _mapper.Map<TradeERP.DAL.Models.BillMaster>(viewModel);
-            return await _unitOfWork.BillMasters.UpdateAsync(model);
+            var lines = _mapper.Map<List<TradeERP.DAL.Models.BillDetails>>(viewModel.Lines);
+            return await _unitOfWork.BillMasters.UpdateWithDetailsAsync(model, lines);
         }
 
         public async Task<ResultMessage> DeleteBillMaster(int id)
@@ -49,6 +51,11 @@ namespace TradeERP.BLL.Services.Definitions
         public async Task<ResultMessage> PostBillMaster(int id)
         {
             return await _unitOfWork.BillMasters.PostBillAsync(id);
+        }
+
+        public async Task<int> GetNewBillMasterCodeAsync()
+        {
+            return await _unitOfWork.BillMasters.GetNewCodeAsync();
         }
     }
 }

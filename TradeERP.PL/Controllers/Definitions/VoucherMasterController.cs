@@ -44,8 +44,10 @@ namespace TradeERP.PL.Controllers.Definitions
 
         public async Task<IActionResult> Create()
         {
+            var newCode = await _services.GetNewVoucherMasterCodeAsync();
             var model = new VoucherMasterViewModel
             {
+                Code = newCode.ToString(),
                 VoucherDate = DateTime.Today
             };
 

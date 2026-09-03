@@ -9,5 +9,6 @@ namespace TradeERP.BLL.IServices.Definitions
         Task<VoucherMasterViewModel?> GetVoucherMasterById(int id);
         Task<ResultMessage> AddVoucherMaster(VoucherMasterViewModel viewModel);
         Task<ResultMessage> DeleteVoucherMaster(int id);
+        Task<int> GetNewVoucherMasterCodeAsync();
     }
 }

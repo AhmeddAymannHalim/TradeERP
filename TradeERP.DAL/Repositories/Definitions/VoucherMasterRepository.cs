@@ -14,6 +14,17 @@ namespace TradeERP.DAL.Repositories.Definitions
 
         public VoucherMasterRepository(ApplicationDbContext context) : base(context) { }
 
+        public async Task<int> GetNewCodeAsync()
+        {
+            var codes = await _context.Set<VoucherMaster>().Select(v => v.Code).ToListAsync();
+
+            return codes
+                .Where(c => int.TryParse(c, out _))
+                .Select(int.Parse)
+                .DefaultIfEmpty(0)
+                .Max() + 1;
+        }
+
         public async Task<PaginatedResult<VoucherMaster>> GetPagedAsync(int pageNo, string? searchString)
         {
             var query = _context.Set<VoucherMaster>().AsNoTracking()

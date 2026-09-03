@@ -52,9 +52,18 @@ namespace TradeERP.BLL.MappingProfiles
                 .ReverseMap();
 
             CreateMap<BillMaster, BillMasterViewModel>()
+                .ForMember(d => d.Lines, o => o.MapFrom(s => s.BillDetails))
                 .ReverseMap()
                 .ForMember(d => d.Customer, o => o.Ignore())
-                .ForMember(d => d.Supplier, o => o.Ignore());
+                .ForMember(d => d.Supplier, o => o.Ignore())
+                .ForMember(d => d.BillDetails, o => o.Ignore());
+
+            CreateMap<BillDetails, BillMasterLineViewModel>()
+                .ReverseMap()
+                .ForMember(d => d.BillMaster, o => o.Ignore())
+                .ForMember(d => d.Product, o => o.Ignore())
+                .ForMember(d => d.Code, o => o.Ignore())
+                .ForMember(d => d.BillMasterId, o => o.Ignore());
 
             CreateMap<BillDetails, BillDetailsViewModel>()
                 .ForMember(d => d.BillMasterCode, o => o.MapFrom(s => s.BillMaster != null ? s.BillMaster.Code : string.Empty))

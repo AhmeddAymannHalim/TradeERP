@@ -44,8 +44,10 @@ namespace TradeERP.PL.Controllers.Definitions
 
         public async Task<IActionResult> Create()
         {
+            var newCode = await _services.GetNewBillMasterCodeAsync();
             var model = new BillMasterViewModel
             {
+                Code = newCode.ToString(),
                 BillDate = DateTime.Today
             };
 
@@ -131,6 +133,7 @@ namespace TradeERP.PL.Controllers.Definitions
         {
             model.Customers = await _lookupService.CustomerLookupAsync();
             model.Suppliers = await _lookupService.SupplierLookupAsync();
+            model.Products = await _lookupService.ProductLookupAsync();
         }
     }
 }

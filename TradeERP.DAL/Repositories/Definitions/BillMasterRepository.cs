@@ -125,6 +125,81 @@ namespace TradeERP.DAL.Repositories.Definitions
             }
         }
 
+        public async Task<ResultMessage> AddWithDetailsAsync(BillMaster bill, List<BillDetails> lines)
+        {
+            if (lines.Count == 0)
+                return new ResultMessage { Success = false, Message = "BillHasNoDetails" };
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await _context.Set<BillMaster>().AddAsync(bill);
+                await _context.SaveChangesAsync();
+
+                var lineNo = 1;
+                foreach (var line in lines)
+                {
+                    line.BillMasterId = bill.Id;
+                    line.Code = $"{bill.Code}-{lineNo++}";
+                }
+
+                await _context.Set<BillDetails>().AddRangeAsync(lines);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return new ResultMessage { Success = true };
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return new ResultMessage { Success = false, Message = ex.Message };
+            }
+        }
+
+        public async Task<ResultMessage> UpdateWithDetailsAsync(BillMaster bill, List<BillDetails> lines)
+        {
+            var existing = await _context.Set<BillMaster>().AsNoTracking().FirstOrDefaultAsync(b => b.Id == bill.Id);
+            if (existing == null)
+                return new ResultMessage { Success = false, Message = "RecordNotFound" };
+
+            if (existing.IsPosted)
+                return new ResultMessage { Success = false, Message = "BillAlreadyPosted" };
+
+            if (lines.Count == 0)
+                return new ResultMessage { Success = false, Message = "BillHasNoDetails" };
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await base.UpdateAsync(bill);
+
+                var oldLines = await _context.Set<BillDetails>()
+                    .Where(d => d.BillMasterId == bill.Id)
+                    .ToListAsync();
+                _context.Set<BillDetails>().RemoveRange(oldLines);
+                await _context.SaveChangesAsync();
+
+                var lineNo = 1;
+                foreach (var line in lines)
+                {
+                    line.Id = 0;
+                    line.BillMasterId = bill.Id;
+                    line.Code = $"{bill.Code}-{lineNo++}";
+                }
+
+                await _context.Set<BillDetails>().AddRangeAsync(lines);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return new ResultMessage { Success = true };
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return new ResultMessage { Success = false, Message = ex.Message };
+            }
+        }
+
         public override async Task<ResultMessage> UpdateAsync(BillMaster entity)
         {
             var existing = await _context.Set<BillMaster>().AsNoTracking().FirstOrDefaultAsync(b => b.Id == entity.Id);
@@ -147,6 +222,17 @@ namespace TradeERP.DAL.Repositories.Definitions
                 return new ResultMessage { Success = false, Message = "BillAlreadyPosted" };
 
             return await base.DeleteAsync(id);
+        }
+
+        public async Task<int> GetNewCodeAsync()
+        {
+            var codes = await _context.Set<BillMaster>().Select(b => b.Code).ToListAsync();
+
+            return codes
+                .Where(c => int.TryParse(c, out _))
+                .Select(int.Parse)
+                .DefaultIfEmpty(0)
+                .Max() + 1;
         }
 
         public async Task<PaginatedResult<BillMaster>> GetPagedAsync(int pageNo, string? searchString)

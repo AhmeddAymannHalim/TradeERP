@@ -39,5 +39,10 @@ namespace TradeERP.BLL.Services.Definitions
         {
             return await _unitOfWork.VoucherMasters.DeleteAsync(id);
         }
+
+        public async Task<int> GetNewVoucherMasterCodeAsync()
+        {
+            return await _unitOfWork.VoucherMasters.GetNewCodeAsync();
+        }
     }
 }

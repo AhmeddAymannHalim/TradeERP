@@ -8,5 +8,6 @@ namespace TradeERP.DAL.IRepositories.Definitions
     {
         Task<PaginatedResult<VoucherMaster>> GetPagedAsync(int pageNo, string? searchString);
         Task<ResultMessage> AddAndPostAsync(VoucherMaster voucher);
+        Task<int> GetNewCodeAsync();
     }
 }

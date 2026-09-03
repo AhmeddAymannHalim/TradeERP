@@ -17,5 +17,8 @@ namespace TradeERP.Shared.ViewModels.Definitions
 
         public List<LookupItem> Customers { get; set; } = new List<LookupItem>();
         public List<LookupItem> Suppliers { get; set; } = new List<LookupItem>();
+        public List<LookupItem> Products { get; set; } = new List<LookupItem>();
+
+        public List<BillMasterLineViewModel> Lines { get; set; } = new List<BillMasterLineViewModel>();
     }
 }
