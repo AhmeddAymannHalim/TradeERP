@@ -21,6 +21,7 @@ namespace TradeERP.DAL.UnitOfWork
         IEntryDetailsRepository EntryDetails { get; }
         IBillSettingRepository BillSettings { get; }
         IEntrySettingRepository EntrySettings { get; }
+        IVoucherMasterRepository VoucherMasters { get; }
 
         Task<int> SaveChangesAsync();
     }

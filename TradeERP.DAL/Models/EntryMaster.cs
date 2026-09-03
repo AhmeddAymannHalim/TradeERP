@@ -9,6 +9,9 @@ namespace TradeERP.DAL.Models
         public int? SourceBillMasterId { get; set; }
         public BillMaster? SourceBillMaster { get; set; }
 
+        public int? SourceVoucherMasterId { get; set; }
+        public VoucherMaster? SourceVoucherMaster { get; set; }
+
         public ICollection<EntryDetails> EntryDetails { get; set; } = new List<EntryDetails>();
     }
 }

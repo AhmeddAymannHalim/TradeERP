@@ -38,6 +38,7 @@ namespace TradeERP.DAL.Data
         public DbSet<EntryDetails> EntryDetails => Set<EntryDetails>();
         public DbSet<BillSetting> BillSettings => Set<BillSetting>();
         public DbSet<EntrySetting> EntrySettings => Set<EntrySetting>();
+        public DbSet<VoucherMaster> VoucherMasters => Set<VoucherMaster>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

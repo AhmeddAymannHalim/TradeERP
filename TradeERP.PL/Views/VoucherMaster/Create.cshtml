@@ -1,0 +1,107 @@
+@using System.Globalization
+@model VoucherMasterViewModel
+@{
+    ViewBag.Title = L["InsertNewVoucherMaster"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-9">
+            <form asp-action="Create">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h4 class="fw-bold m-0">@L["InsertNewVoucherMaster"]</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center justify-content-center">
+                            <div class="col-md-4">
+                                <label asp-for="Code" class="form-label"></label>
+                                <input asp-for="Code" class="form-control" />
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="VoucherDate" class="form-label">@L["VoucherDate"]</label>
+                                <input asp-for="VoucherDate" type="date" class="form-control" />
+                                <span asp-validation-for="VoucherDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="VoucherType" class="form-label">@L["VoucherType"]</label>
+                                <select asp-for="VoucherType" id="VoucherType" class="form-select">
+                                    @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.VoucherType>())
+                                    {
+                                        <option value="@item.Value">@L[item.Text]</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="VoucherType" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4" id="CustomerGroup">
+                                <label asp-for="CustomerId" class="form-label">@L["Customer"]</label>
+                                <select asp-for="CustomerId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.Customers)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="CustomerId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4" id="SupplierGroup">
+                                <label asp-for="SupplierId" class="form-label">@L["Supplier"]</label>
+                                <select asp-for="SupplierId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.Suppliers)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="TreasuryLedgerAccountId" class="form-label">@L["TreasuryLedgerAccount"]</label>
+                                <select asp-for="TreasuryLedgerAccountId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.LedgerAccounts)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="TreasuryLedgerAccountId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Amount" class="form-label">@L["Amount"]</label>
+                                <input asp-for="Amount" class="form-control" />
+                                <span asp-validation-for="Amount" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-8">
+                                <label asp-for="Notes" class="form-label">@L["Notes"]</label>
+                                <input asp-for="Notes" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-3 mb-0">
+                            @L["VoucherPostsImmediatelyNote"]
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function toggleVoucherParty() {
+            var isReceipt = document.getElementById('VoucherType').value === '1';
+            document.getElementById('CustomerGroup').hidden = !isReceipt;
+            document.getElementById('SupplierGroup').hidden = isReceipt;
+        }
+        document.getElementById('VoucherType').addEventListener('change', toggleVoucherParty);
+        toggleVoucherParty();
+    </script>
+}

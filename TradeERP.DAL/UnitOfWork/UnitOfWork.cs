@@ -24,6 +24,7 @@ namespace TradeERP.DAL.UnitOfWork
         private IEntryDetailsRepository? _entryDetails;
         private IBillSettingRepository? _billSettings;
         private IEntrySettingRepository? _entrySettings;
+        private IVoucherMasterRepository? _voucherMasters;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -74,6 +75,9 @@ namespace TradeERP.DAL.UnitOfWork
 
         public IEntrySettingRepository EntrySettings
             => _entrySettings ??= new EntrySettingRepository(_context);
+
+        public IVoucherMasterRepository VoucherMasters
+            => _voucherMasters ??= new VoucherMasterRepository(_context);
 
         public Task<int> SaveChangesAsync() => _context.SaveChangesAsync();
     }

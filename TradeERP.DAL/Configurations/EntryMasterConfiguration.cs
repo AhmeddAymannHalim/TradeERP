@@ -14,6 +14,11 @@ namespace TradeERP.DAL.Configurations
                 .WithMany()
                 .HasForeignKey(e => e.SourceBillMasterId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(e => e.SourceVoucherMaster)
+                .WithMany()
+                .HasForeignKey(e => e.SourceVoucherMasterId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -75,6 +75,12 @@ namespace TradeERP.BLL.MappingProfiles
                 .ForMember(d => d.EntryMaster, o => o.Ignore())
                 .ForMember(d => d.LedgerAccount, o => o.Ignore());
 
+            CreateMap<VoucherMaster, VoucherMasterViewModel>()
+                .ReverseMap()
+                .ForMember(d => d.Customer, o => o.Ignore())
+                .ForMember(d => d.Supplier, o => o.Ignore())
+                .ForMember(d => d.TreasuryLedgerAccount, o => o.Ignore());
+
             CreateMap<BillSetting, BillSettingViewModel>()
                 .ReverseMap();
 
