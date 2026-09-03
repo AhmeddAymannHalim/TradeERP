@@ -11,7 +11,7 @@ namespace TradeERP.Shared.HelperServices.Services
         private readonly string _cultureName;
         private readonly IMemoryCacheService _memoryCacheService;
 
-        private string CacheKeyFormatted => $"Locale.{_cultureName}.{{0}}";
+        private string CacheKey => $"Locale.{_cultureName}";
         private string RelativeFilePath => Path.Combine("Resources", $"{_cultureName}.json");
 
         public JsonStringLocalizer(IMemoryCacheService memoryCacheService, string? cultureName = null)
@@ -35,16 +35,19 @@ namespace TradeERP.Shared.HelperServices.Services
             return JsonSerializer.Deserialize<Dictionary<string, string>>(stream, FileOptions) ?? new Dictionary<string, string>();
         }
 
-        private string GetString(string resourceKey)
+        private Dictionary<string, string> GetAllValues()
         {
-            var cacheKey = string.Format(CacheKeyFormatted, resourceKey);
-
-            return _memoryCacheService.GetOrSet(cacheKey, () =>
+            return _memoryCacheService.GetOrSet(CacheKey, () =>
             {
                 var fullPath = Path.GetFullPath(RelativeFilePath);
-                var values = LoadFile(fullPath);
-                return values.TryGetValue(resourceKey, out var value) ? value : string.Empty;
+                return LoadFile(fullPath);
             }, new MemoryCacheEntryOptions());
+        }
+
+        private string GetString(string resourceKey)
+        {
+            var values = GetAllValues();
+            return values.TryGetValue(resourceKey, out var value) ? value : string.Empty;
         }
 
         public LocalizedString this[string name]
@@ -70,9 +73,7 @@ namespace TradeERP.Shared.HelperServices.Services
 
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
-            var fullPath = Path.GetFullPath(RelativeFilePath);
-            var values = LoadFile(fullPath);
-            foreach (var kvp in values)
+            foreach (var kvp in GetAllValues())
                 yield return new LocalizedString(kvp.Key, kvp.Value, false);
         }
     }

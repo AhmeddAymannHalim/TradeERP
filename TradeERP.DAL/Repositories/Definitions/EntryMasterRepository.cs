@@ -90,6 +90,130 @@ namespace TradeERP.DAL.Repositories.Definitions
             return code;
         }
 
+        public async Task<string> GetNewCodeAsync()
+        {
+            var setting = await _context.Set<EntrySetting>().AsNoTracking().FirstOrDefaultAsync();
+            return setting == null ? "1" : $"{setting.Prefix}{setting.NextNumber:D5}";
+        }
+
+        public async Task<EntryMaster?> GetByIdWithDetailsAsync(int id)
+        {
+            return await _context.Set<EntryMaster>()
+                .Include(m => m.EntryDetails)
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        private static ResultMessage? ValidateLines(List<EntryDetails> lines)
+        {
+            if (lines.Count < 2)
+                return new ResultMessage { Success = false, Message = "EntryNeedsAtLeastTwoLines" };
+
+            foreach (var line in lines)
+            {
+                var hasDebit = line.DebitAmount > 0;
+                var hasCredit = line.CreditAmount > 0;
+
+                if (hasDebit == hasCredit)
+                    return new ResultMessage { Success = false, Message = "EntryLineNeedsDebitOrCredit" };
+            }
+
+            var totalDebit = lines.Sum(l => l.DebitAmount);
+            var totalCredit = lines.Sum(l => l.CreditAmount);
+
+            if (totalDebit != totalCredit)
+                return new ResultMessage { Success = false, Message = "EntryNotBalanced" };
+
+            return null;
+        }
+
+        public async Task<ResultMessage> AddWithLinesAsync(EntryMaster entry, List<EntryDetails> lines)
+        {
+            var validationError = ValidateLines(lines);
+            if (validationError != null)
+                return validationError;
+
+            if (await _context.Set<AccountingPeriod>().AnyAsync(p => p.IsClosed && entry.EntryDate >= p.StartDate && entry.EntryDate <= p.EndDate))
+                return new ResultMessage { Success = false, Message = "PeriodIsClosed" };
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                entry.EntryType = EntryType.Manual;
+                entry.Code = await GetNextEntryCodeAsync();
+
+                await _context.Set<EntryMaster>().AddAsync(entry);
+                await _context.SaveChangesAsync();
+
+                var lineNo = 1;
+                foreach (var line in lines)
+                {
+                    line.EntryMasterId = entry.Id;
+                    line.Code = $"{entry.Code}-{lineNo++}";
+                }
+
+                await _context.Set<EntryDetails>().AddRangeAsync(lines);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return new ResultMessage { Success = true };
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return new ResultMessage { Success = false, Message = ex.Message };
+            }
+        }
+
+        public async Task<ResultMessage> UpdateWithLinesAsync(EntryMaster entry, List<EntryDetails> lines)
+        {
+            var existing = await _context.Set<EntryMaster>().AsNoTracking().FirstOrDefaultAsync(m => m.Id == entry.Id);
+            if (existing == null)
+                return new ResultMessage { Success = false, Message = "RecordNotFound" };
+
+            if (existing.EntryType != EntryType.Manual)
+                return new ResultMessage { Success = false, Message = "EntryIsSystemGenerated" };
+
+            var validationError = ValidateLines(lines);
+            if (validationError != null)
+                return validationError;
+
+            if (await _context.Set<AccountingPeriod>().AnyAsync(p => p.IsClosed && entry.EntryDate >= p.StartDate && entry.EntryDate <= p.EndDate))
+                return new ResultMessage { Success = false, Message = "PeriodIsClosed" };
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                entry.Code = existing.Code;
+                entry.EntryType = EntryType.Manual;
+                await base.UpdateAsync(entry);
+
+                var oldLines = await _context.Set<EntryDetails>()
+                    .Where(d => d.EntryMasterId == entry.Id)
+                    .ToListAsync();
+                _context.Set<EntryDetails>().RemoveRange(oldLines);
+                await _context.SaveChangesAsync();
+
+                var lineNo = 1;
+                foreach (var line in lines)
+                {
+                    line.Id = 0;
+                    line.EntryMasterId = entry.Id;
+                    line.Code = $"{entry.Code}-{lineNo++}";
+                }
+
+                await _context.Set<EntryDetails>().AddRangeAsync(lines);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return new ResultMessage { Success = true };
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return new ResultMessage { Success = false, Message = ex.Message };
+            }
+        }
+
         public override async Task<ResultMessage> UpdateAsync(EntryMaster entity)
         {
             var existing = await _context.Set<EntryMaster>().AsNoTracking().FirstOrDefaultAsync(m => m.Id == entity.Id);

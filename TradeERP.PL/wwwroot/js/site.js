@@ -338,6 +338,24 @@ function Delete(url) {
     });
 }
 
+function PostBill(url) {
+    confirmAction(t('ConfirmPostBill'), t('AreYouSure')).then(confirmed => {
+        if (!confirmed) return;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showToast(result.message || t('PostedSuccessfully'), 'success');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast(result.message || t('ErrorWhileSaving'), 'error');
+                }
+            })
+            .catch(() => showToast(t('ErrorWhileSaving'), 'error'));
+    });
+}
+
 window.TradeERP = {
     showToast: showToast,
     confirmAction: confirmAction,

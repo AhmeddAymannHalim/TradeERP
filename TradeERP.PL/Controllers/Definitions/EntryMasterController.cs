@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using TradeERP.BLL.IServices.Definitions;
+using TradeERP.BLL.IServices.ICommons;
 using TradeERP.Shared;
 using TradeERP.Shared.Extensions;
 using TradeERP.Shared.HelperServices.Interfaces;
@@ -12,15 +13,18 @@ namespace TradeERP.PL.Controllers.Definitions
     public class EntryMasterController : Controller
     {
         private readonly IEntryMasterServices _services;
+        private readonly ILookupService _lookupService;
         private readonly IToastrService _toastr;
         private readonly IStringLocalizer<SharedResource> _localizer;
 
         public EntryMasterController(
             IEntryMasterServices services,
+            ILookupService lookupService,
             IToastrService toastr,
             IStringLocalizer<SharedResource> localizer)
         {
             _services = services;
+            _lookupService = lookupService;
             _toastr = toastr;
             _localizer = localizer;
         }
@@ -38,9 +42,17 @@ namespace TradeERP.PL.Controllers.Definitions
             }
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new EntryMasterViewModel { EntryDate = DateTime.Today });
+            var newCode = await _services.GetNewEntryMasterCodeAsync();
+            var model = new EntryMasterViewModel
+            {
+                Code = newCode,
+                EntryDate = DateTime.Today
+            };
+
+            await PopulateData(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -51,7 +63,7 @@ namespace TradeERP.PL.Controllers.Definitions
 
             var result = await _services.AddEntryMaster(model);
             if (!result.Success)
-                return Json(new { success = false, message = result.Message ?? _localizer["ErrorWhileSaving"].Value });
+                return Json(new { success = false, message = _localizer[result.Message ?? "ErrorWhileSaving"].Value });
 
             return Json(new
             {
@@ -70,6 +82,7 @@ namespace TradeERP.PL.Controllers.Definitions
                 return RedirectToAction("Index");
             }
 
+            await PopulateData(model);
             return View(model);
         }
 
@@ -81,7 +94,7 @@ namespace TradeERP.PL.Controllers.Definitions
 
             var result = await _services.UpdateEntryMaster(model);
             if (!result.Success)
-                return Json(new { success = false, message = result.Message ?? _localizer["ErrorWhileUpdating"].Value });
+                return Json(new { success = false, message = _localizer[result.Message ?? "ErrorWhileUpdating"].Value });
 
             return Json(new
             {
@@ -99,12 +112,17 @@ namespace TradeERP.PL.Controllers.Definitions
                 if (result.Success)
                     return Json(new { success = true });
 
-                return Json(new { success = false, message = result.Message });
+                return Json(new { success = false, message = _localizer[result.Message ?? "DeleteFailed"].Value });
             }
             catch (Exception)
             {
                 return Json(new { success = false, errorMessage = _localizer["SomethingWentError"].Value });
             }
+        }
+
+        private async Task PopulateData(EntryMasterViewModel model)
+        {
+            model.LedgerAccounts = await _lookupService.LedgerAccountLookupAsync();
         }
     }
 }

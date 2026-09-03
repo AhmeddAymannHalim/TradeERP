@@ -1,6 +1,8 @@
+@using System.Globalization
 @model TradeERP.Shared.ViewModels.Definitions.Reports.DashboardSummaryViewModel
 @{
     ViewData["Title"] = L["Dashboard"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.Name.StartsWith("ar");
 }
 
 <div class="row g-3 mb-3">
@@ -129,7 +131,7 @@
                     {
                         <li class="list-group-item d-flex align-items-center justify-content-between gap-3">
                             <div class="flex-grow-1">
-                                <p class="mb-1">@item.ProductEnName</p>
+                                <p class="mb-1">@(isArabicCulture ? item.ProductArName : item.ProductEnName)</p>
                                 <small class="text-muted">@item.Quantity.ToString("N0")</small>
                             </div>
                             <span class="fw-semibold text-primary">@item.TotalValue.ToString("N2")</span>
@@ -158,7 +160,7 @@
                         <li class="list-group-item d-flex align-items-center justify-content-between gap-3">
                             <div class="flex-grow-1">
                                 <p class="mb-1">@item.Code</p>
-                                <small class="text-muted">@item.CustomerEnName · @item.BillDate.ToString("yyyy-MM-dd")</small>
+                                <small class="text-muted">@(isArabicCulture ? item.CustomerArName : item.CustomerEnName) · @item.BillDate.ToString("yyyy-MM-dd")</small>
                             </div>
                             <span class="fw-semibold text-success">@item.Amount.ToString("N2")</span>
                         </li>
@@ -186,7 +188,7 @@
                         <li class="list-group-item d-flex align-items-center justify-content-between gap-3">
                             <div class="flex-grow-1">
                                 <p class="mb-1">@item.Code</p>
-                                <small class="text-muted">@item.SupplierEnName · @item.BillDate.ToString("yyyy-MM-dd")</small>
+                                <small class="text-muted">@(isArabicCulture ? item.SupplierArName : item.SupplierEnName) · @item.BillDate.ToString("yyyy-MM-dd")</small>
                             </div>
                             <span class="fw-semibold text-warning">@item.Amount.ToString("N2")</span>
                         </li>

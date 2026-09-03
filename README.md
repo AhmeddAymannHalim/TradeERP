@@ -1,161 +1,81 @@
 # TradeERP
 
-A Clean Architecture skeleton for a Trading & Distribution ERP system, built on **ASP.NET Core 8 MVC**.
+A trading & distribution ERP for small and mid-sized wholesalers and distributors, built with **ASP.NET Core 8 MVC**.
 
-> This repository currently contains **infrastructure only** — no business entities (Employee, Product, etc.) have been implemented yet. It is the foundation the real modules will be built on top of.
+## What problem does it solve?
 
----
+A trading business needs to track products and stock, buy from suppliers, sell to customers, and keep its books straight — usually across a spreadsheet for inventory, a notebook for accounts, and a separate invoicing tool. Numbers drift apart, stock counts go stale, and nobody can answer "are we actually profitable this month?" without manual reconciliation.
 
-## Tech Stack
+TradeERP puts all of that in one place: every sale and purchase automatically updates stock levels and posts to the ledger, so the accounting and the inventory can never fall out of sync with each other.
 
-| Concern | Technology |
+## How it works
+
+1. **Set up your data** — employees, customers, suppliers, product categories and products, and a chart of accounts.
+2. **Record a bill** — a sale, a purchase, or a return. TradeERP validates it against the current accounting period, then posts it: stock moves in or out, and the matching debit/credit entry is written to the ledger automatically.
+3. **Record a voucher** — a cash/bank receipt or payment, posted to the ledger the same way.
+4. **Read the reports** — trial balance, customer/supplier statements of account, and stock valuation, always built from what's actually been posted, not a separate manually-maintained total.
+
+Bilingual out of the box (English/Arabic, with right-to-left layout for Arabic), and works for a single admin or a small team with role-based access.
+
+## Key features
+
+- **Inventory** — products, categories, and a full stock ledger (every in/out movement, running balance, valuation)
+- **Sales & purchasing** — one bill screen handles sales, purchase, and both return types, auto-numbered per your own prefix/sequence settings
+- **Accounting** — journal entries, cash/bank vouchers, a real chart of accounts, opening balances, and lockable accounting periods so closed months can't be edited by accident
+- **Reports** — trial balance, statement of account, and stock valuation
+- **Multi-language** — English and Arabic, including RTL layout
+- **Light & dark theme**, switchable and remembered per device
+- **Role-based access** (Admin / Employee) with per-user account management
+
+## Tech stack
+
+| Layer | Technology |
 |---|---|
-| Framework | ASP.NET Core 8.0 MVC |
-| ORM | Entity Framework Core 8 (SQL Server provider) |
-| Auth | ASP.NET Core Identity (cookie-based, role scaffolding wired) |
-| Object mapping | AutoMapper 12 |
-| Localization | Custom JSON-file string localizer (`Resources/en.json`, `Resources/ar.json`) — no `.resx` |
-| Frontend | Bootstrap 5, jQuery, SweetAlert2, Select2, Tabulator.js (all via CDN) |
-| Caching | `IMemoryCache` |
+| Backend | ASP.NET Core 8 MVC |
+| Database | SQL Server via Entity Framework Core 8 |
+| Auth | ASP.NET Core Identity (cookie-based, role-scoped) |
+| Object mapping | AutoMapper |
+| Validation | FluentValidation |
+| Localization | Custom JSON-backed string localizer (`Resources/en.json`, `Resources/ar.json`) |
+| Frontend | Bootstrap 5, jQuery, Select2, Tabulator.js, SweetAlert2 |
 
----
-
-## Solution Structure (Clean Architecture)
+## Project structure
 
 ```
 TradeERP.sln
-├── TradeERP.Shared      Cross-cutting: ViewModels, Enums, Options, Constants, Extensions, HelperServices
-├── TradeERP.DAL         EF Core DbContext, combined Repositories, Unit of Work
-├── TradeERP.BLL         Application services, AutoMapper profiles, DI registration
-└── TradeERP.PL          MVC project: Controllers, Views, wwwroot, composition root
+├── TradeERP.Shared      ViewModels, enums, constants — referenced by every other layer, depends on nothing
+├── TradeERP.DAL         EF Core DbContext, models, repositories
+├── TradeERP.BLL         Business services, validators, AutoMapper profiles
+└── TradeERP.PL          MVC project: controllers, views, static assets
 ```
 
-### Dependency direction
+Each module (Employee, Product, BillMaster, etc.) follows the same layering: a thin controller, a service in the BLL that runs FluentValidation and orchestrates the request, and a repository in the DAL that owns the actual data/business logic for that entity.
 
-```
-TradeERP.PL  →  TradeERP.BLL  →  TradeERP.DAL  →  TradeERP.Shared
-     └──────────────────────────────────────────────────┘
-```
+## Getting started
 
-`TradeERP.Shared` has no project references of its own — every other layer can reference it, but it never references back, so there is no way to introduce a circular dependency.
+**Prerequisites:** .NET 8 SDK, SQL Server (local or remote)
 
-| Project | References | Notable packages |
-|---|---|---|
-| **Shared** | — | `FrameworkReference: Microsoft.AspNetCore.App` (HttpContext, MVC types, localization, memory cache) |
-| **DAL** | Shared | `Microsoft.EntityFrameworkCore` (core only — no SQL Server provider here) |
-| **BLL** | DAL, Shared | `AutoMapper.Extensions.Microsoft.DependencyInjection` |
-| **PL** | BLL, Shared | `Microsoft.EntityFrameworkCore.SqlServer`, `.Design`, `.Tools`, `Microsoft.AspNetCore.Identity.EntityFrameworkCore` |
-
-The SQL Server provider and EF design-time tooling live only in **PL**, since it's the startup project — `UseSqlServer(...)` is configured there and `dotnet ef` runs against it.
-
----
-
-## Repository Pattern (important — not generic)
-
-This project deliberately avoids a generic `IRepository<T>` / `Repository<T>`. Instead:
-
-- Every **Definitions** module entity (Employee, Department, Product, ...) gets its own **explicit, non-generic method set** inside a single combined repository: `IDefinitionRepository` / `DefinitionRepository`.
-
-  ```csharp
-  Task<IEnumerable<Employee>> GetAllEmployeesAsync();
-  Task<Employee?> GetEmployeeByIdAsync(int id);
-  Task AddEmployeeAsync(Employee entity);
-  Task UpdateEmployeeAsync(Employee entity);
-  Task DeleteEmployeeAsync(int id);
-  ```
-
-  Reads use `AsNoTracking()`; no reflection, no generic constraints.
-
-- Despite the repository being combined per module group, **each entity still gets its own `IService` / `Service` / `Controller` / Views**, one-to-one — the repository is the only thing that's shared.
-
-- `IUnitOfWork` exposes `DefinitionRepository` (and future combined repositories, e.g. `IReportRepository`) plus a single `SaveChangesAsync()`.
-
-This convention is documented directly in `TradeERP.DAL/IRepositories/IDefinitionRepository.cs`.
-
----
-
-## How the Application Boots
-
-`Program.cs` is intentionally a thin entry point — all wiring lives in two extension classes under `TradeERP.PL/Extensions/`:
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-builder.ConfigureAppSettings();   // WebApplicationBuilderExtensions.cs
-var app = builder.Build();
-await app.ConfigureRequestPipeline();   // WebApplicationExtensions.cs
-app.Run();
-```
-
-**`ConfigureAppSettings`** registers, grouped by concern:
-- `ApplicationDbContext` (SQL Server, 60s command timeout)
-- MVC + JSON options + view localization
-- Request localization (English + Arabic cultures)
-- ASP.NET Core Identity (cookie auth, role scaffolding)
-- Response compression (Brotli/Gzip)
-- Session
-- `AddBllServices()` (AutoMapper + `IUnitOfWork` + future entity services)
-- Form/Kestrel upload size limits
-
-**`ConfigureRequestPipeline`** wires the middleware pipeline in the correct order (response compression *before* static files, so static assets are actually compressed) and, at the end, **calls `dbContext.Database.MigrateAsync()`** — pending EF Core migrations are applied automatically on every startup. Migration failures are caught and logged rather than crashing the app, so the app still comes up if the database isn't reachable yet (useful before any DB is provisioned).
-
----
-
-## Localization
-
-Strings are resolved from flat JSON files instead of `.resx`:
-
-```
-TradeERP.PL/Resources/en.json
-TradeERP.PL/Resources/ar.json
-```
-
-`IStringLocalizerFactory` is implemented by `JsonStringLocalizerFactory` (`TradeERP.Shared/HelperServices`), backed by an in-memory cache so files aren't re-read on every request. Views support suffix-based localization (`Index.ar.cshtml` next to `Index.cshtml`), and `RequestLocalizationOptions` supports both `en` and `ar` cultures (Arabic configured with Gregorian calendar and Latin digits/decimal separators).
-
----
-
-## Getting Started
-
-### Prerequisites
-- .NET 8 SDK
-- SQL Server (local or remote)
-
-### Setup
-
-1. Update the connection string in `TradeERP.PL/appsettings.json`:
+1. Set your connection string in `TradeERP.PL/appsettings.Development.json`:
    ```json
    "ConnectionStrings": {
      "DefaultConnection": "Server=YOUR_SERVER;Database=TradeERP;Trusted_Connection=True;TrustServerCertificate=True;"
    }
    ```
 
-2. Restore and build:
+2. Run it:
    ```bash
    dotnet restore
-   dotnet build
-   ```
-
-3. Run (migrations apply automatically on startup):
-   ```bash
    dotnet run --project TradeERP.PL
    ```
 
-### Adding a migration
+   Migrations apply automatically on startup, and the database is seeded with a working demo dataset (chart of accounts, sample customers/suppliers/products, an open accounting period, a couple of posted transactions) so there's something to look at right away.
 
-Migrations are generated against `TradeERP.DAL` with `TradeERP.PL` as the startup project:
+3. Log in with the seeded admin account:
+   - **Email:** `admin@traderp.local`
+   - **Password:** `Admin@123`
+
+### Adding a database migration
 
 ```bash
 dotnet ef migrations add <MigrationName> --project TradeERP.DAL --startup-project TradeERP.PL
 ```
-
----
-
-## Roadmap
-
-This skeleton is ready for the first real Definitions module (e.g. Employee, Department). Each new module follows the same pattern:
-
-1. Add the entity to `TradeERP.DAL/Models`
-2. Add its method group to `IDefinitionRepository` / `DefinitionRepository`
-3. Add its ViewModel to `TradeERP.Shared/ViewModels`
-4. Add its AutoMapper mapping to `TradeERP.BLL/MappingProfiles`
-5. Add its `I{Entity}Service` / `{Entity}Service` to `TradeERP.BLL`
-6. Add its `{Entity}Controller` + Views to `TradeERP.PL`

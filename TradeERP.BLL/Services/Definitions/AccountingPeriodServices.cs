@@ -25,7 +25,7 @@ namespace TradeERP.BLL.Services.Definitions
 
         public async Task<ResultMessage> AddAccountingPeriod(AccountingPeriodViewModel viewModel)
         {
-            var model = _mapper.Map<TradeERP.DAL.Models.AccountingPeriod>(viewModel);
+            var model = _mapper.Map<DAL.Models.AccountingPeriod>(viewModel);
             return await _unitOfWork.AccountingPeriods.AddAsync(model);
         }
 

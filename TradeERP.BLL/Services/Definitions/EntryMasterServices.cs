@@ -25,25 +25,32 @@ namespace TradeERP.BLL.Services.Definitions
 
         public async Task<EntryMasterViewModel?> GetEntryMasterById(int id)
         {
-            var model = await _unitOfWork.EntryMasters.GetByIdAsync(id);
+            var model = await _unitOfWork.EntryMasters.GetByIdWithDetailsAsync(id);
             return model == null ? null : _mapper.Map<EntryMasterViewModel>(model);
         }
 
         public async Task<ResultMessage> AddEntryMaster(EntryMasterViewModel viewModel)
         {
             var model = _mapper.Map<TradeERP.DAL.Models.EntryMaster>(viewModel);
-            return await _unitOfWork.EntryMasters.AddAsync(model);
+            var lines = _mapper.Map<List<TradeERP.DAL.Models.EntryDetails>>(viewModel.Lines);
+            return await _unitOfWork.EntryMasters.AddWithLinesAsync(model, lines);
         }
 
         public async Task<ResultMessage> UpdateEntryMaster(EntryMasterViewModel viewModel)
         {
             var model = _mapper.Map<TradeERP.DAL.Models.EntryMaster>(viewModel);
-            return await _unitOfWork.EntryMasters.UpdateAsync(model);
+            var lines = _mapper.Map<List<TradeERP.DAL.Models.EntryDetails>>(viewModel.Lines);
+            return await _unitOfWork.EntryMasters.UpdateWithLinesAsync(model, lines);
         }
 
         public async Task<ResultMessage> DeleteEntryMaster(int id)
         {
             return await _unitOfWork.EntryMasters.DeleteAsync(id);
+        }
+
+        public async Task<string> GetNewEntryMasterCodeAsync()
+        {
+            return await _unitOfWork.EntryMasters.GetNewCodeAsync();
         }
     }
 }

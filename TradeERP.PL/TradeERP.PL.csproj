@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\TradeERP.BLL\TradeERP.BLL.csproj" />
@@ -32,6 +32,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e5d3c077-aa28-495e-9104-05607d5cd97a</UserSecretsId>
   </PropertyGroup>
 
 </Project>

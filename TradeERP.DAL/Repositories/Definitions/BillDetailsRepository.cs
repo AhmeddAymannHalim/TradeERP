@@ -18,6 +18,7 @@ namespace TradeERP.DAL.Repositories.Definitions
             if (await IsParentBillPostedAsync(entity.BillMasterId))
                 return new ResultMessage { Success = false, Message = "BillAlreadyPosted" };
 
+            entity.LineTotal = entity.Quantity * entity.UnitPrice;
             return await base.AddAsync(entity);
         }
 
@@ -26,6 +27,7 @@ namespace TradeERP.DAL.Repositories.Definitions
             if (await IsParentBillPostedAsync(entity.BillMasterId))
                 return new ResultMessage { Success = false, Message = "BillAlreadyPosted" };
 
+            entity.LineTotal = entity.Quantity * entity.UnitPrice;
             return await base.UpdateAsync(entity);
         }
 

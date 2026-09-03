@@ -76,7 +76,18 @@ namespace TradeERP.BLL.MappingProfiles
                 .ForMember(d => d.Product, o => o.Ignore());
 
             CreateMap<EntryMaster, EntryMasterViewModel>()
-                .ReverseMap();
+                .ForMember(d => d.Lines, o => o.MapFrom(s => s.EntryDetails))
+                .ReverseMap()
+                .ForMember(d => d.EntryDetails, o => o.Ignore())
+                .ForMember(d => d.SourceBillMaster, o => o.Ignore())
+                .ForMember(d => d.SourceVoucherMaster, o => o.Ignore());
+
+            CreateMap<EntryDetails, EntryLineViewModel>()
+                .ReverseMap()
+                .ForMember(d => d.EntryMaster, o => o.Ignore())
+                .ForMember(d => d.LedgerAccount, o => o.Ignore())
+                .ForMember(d => d.Code, o => o.Ignore())
+                .ForMember(d => d.EntryMasterId, o => o.Ignore());
 
             CreateMap<EntryMaster, JournalEntryViewModel>()
                 .ForMember(d => d.Lines, o => o.MapFrom(s => s.EntryDetails));

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using TradeERP.BLL.IServices.Definitions;
@@ -8,6 +9,7 @@ using TradeERP.Shared.ViewModels.Definitions;
 
 namespace TradeERP.PL.Controllers.Definitions
 {
+    [Authorize(Roles = "Admin")]
     public class AccountingPeriodController : Controller
     {
         private readonly IAccountingPeriodServices _services;

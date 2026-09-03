@@ -242,6 +242,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                 {
                     line.BillMasterId = bill.Id;
                     line.Code = $"{bill.Code}-{lineNo++}";
+                    line.LineTotal = line.Quantity * line.UnitPrice;
                 }
 
                 await _context.Set<BillDetails>().AddRangeAsync(lines);
@@ -299,6 +300,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                     line.Id = 0;
                     line.BillMasterId = bill.Id;
                     line.Code = $"{bill.Code}-{lineNo++}";
+                    line.LineTotal = line.Quantity * line.UnitPrice;
                 }
 
                 await _context.Set<BillDetails>().AddRangeAsync(lines);

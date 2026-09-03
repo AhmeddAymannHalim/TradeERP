@@ -10,5 +10,6 @@ namespace TradeERP.BLL.IServices.Definitions
         Task<ResultMessage> AddEntryMaster(EntryMasterViewModel viewModel);
         Task<ResultMessage> UpdateEntryMaster(EntryMasterViewModel viewModel);
         Task<ResultMessage> DeleteEntryMaster(int id);
+        Task<string> GetNewEntryMasterCodeAsync();
     }
 }

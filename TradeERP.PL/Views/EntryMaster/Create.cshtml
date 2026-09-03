@@ -1,34 +1,69 @@
+@using System.Globalization
 @model EntryMasterViewModel
 @{
     ViewBag.Title = L["InsertNewEntryMaster"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
 }
 
 <div class="row justify-content-center">
-    <div class="col-xl-9">
-        <form asp-action="Create">
+    <div class="col-xl-11">
+        <form asp-action="Create" id="entryForm">
             <div class="card">
                 <div class="card-header bg-transparent px-4 py-3">
                     <h4 class="mb-0 h5">@L["InsertNewEntryMaster"]</h4>
                 </div>
                 <div class="card-body p-4">
-                        <div class="row g-3 align-items-center justify-content-center">
-                            <div class="col-md-4">
-                                <label asp-for="Code" class="form-label"></label>
-                                <input asp-for="Code" class="form-control" />
-                                <span asp-validation-for="Code" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4">
-                                <label asp-for="EntryDate" class="form-label">@L["EntryDate"]</label>
-                                <input asp-for="EntryDate" type="date" class="form-control" />
-                                <span asp-validation-for="EntryDate" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-8">
-                                <label asp-for="Description" class="form-label">@L["Description"]</label>
-                                <input asp-for="Description" class="form-control" />
-                                <span asp-validation-for="Description" class="text-danger"></span>
-                            </div>
+                    <div class="row g-3 align-items-center justify-content-center">
+                        <div class="col-md-4">
+                            <label asp-for="Code" class="form-label"></label>
+                            <input asp-for="Code" class="form-control" readonly />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="EntryDate" class="form-label">@L["EntryDate"]</label>
+                            <input asp-for="EntryDate" type="date" class="form-control" />
+                            <span asp-validation-for="EntryDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Description" class="form-label">@L["Description"]</label>
+                            <input asp-for="Description" class="form-control" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
                     </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold m-0">@L["LineItems"]</h5>
+                        <button type="button" id="addLineBtn" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-plus-lg"></i> @L["New"]
+                        </button>
+                    </div>
+
+                    <div class="card table-responsive">
+                        <table class="table mb-0 text-nowrap table-hover" id="linesTable">
+                            <thead class="table-light border-light">
+                                <tr>
+                                    <th>@L["LedgerAccount"]</th>
+                                    <th style="width:160px">@L["DebitAmount"]</th>
+                                    <th style="width:160px">@L["CreditAmount"]</th>
+                                    <th style="width:60px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="linesBody"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text-end fw-bold">@L["Amount"]</td>
+                                    <td class="fw-bold" id="totalDebit">0.00</td>
+                                    <td class="fw-bold" id="totalCredit">0.00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <span id="linesValidation" class="text-danger"></span>
+                    <div id="balanceStatus" class="alert mt-2 mb-0"></div>
+                </div>
                 <div class="card-footer d-flex justify-content-center gap-2 bg-transparent">
                     <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
                     <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
@@ -42,4 +77,100 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const ledgerAccountOptions = [
+            { id: '', text: '@L["Choose"]' },
+            @foreach (var item in Model.LedgerAccounts)
+            {
+                @: { id: '@item.Id', text: '@Html.Raw((isArabicCulture ? item.ArName : item.EnName).Replace("'", "\\'"))' },
+            }
+        ];
+
+        let lineIndex = 0;
+
+        function buildLedgerAccountOptions(selectedId) {
+            return ledgerAccountOptions.map(o =>
+                `<option value="${o.id}" ${String(o.id) === String(selectedId) ? 'selected' : ''}>${o.text}</option>`
+            ).join('');
+        }
+
+        function addLine(data) {
+            data = data || {};
+            const idx = lineIndex++;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <select class="form-select" name="Lines[${idx}].LedgerAccountId">${buildLedgerAccountOptions(data.ledgerAccountId)}</select>
+                </td>
+                <td><input type="number" step="0.01" min="0" class="form-control line-debit" name="Lines[${idx}].DebitAmount" value="${data.debitAmount || ''}" /></td>
+                <td><input type="number" step="0.01" min="0" class="form-control line-credit" name="Lines[${idx}].CreditAmount" value="${data.creditAmount || ''}" /></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-sm remove-line"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+            document.getElementById('linesBody').appendChild(row);
+
+            const debitInput = row.querySelector('.line-debit');
+            const creditInput = row.querySelector('.line-credit');
+
+            debitInput.addEventListener('input', () => {
+                if (parseFloat(debitInput.value) > 0) creditInput.value = '';
+                recalcTotals();
+            });
+            creditInput.addEventListener('input', () => {
+                if (parseFloat(creditInput.value) > 0) debitInput.value = '';
+                recalcTotals();
+            });
+            row.querySelector('.remove-line').addEventListener('click', () => {
+                row.remove();
+                recalcTotals();
+            });
+        }
+
+        function recalcTotals() {
+            let totalDebit = 0;
+            let totalCredit = 0;
+            document.querySelectorAll('#linesBody tr').forEach(row => {
+                totalDebit += parseFloat(row.querySelector('.line-debit').value) || 0;
+                totalCredit += parseFloat(row.querySelector('.line-credit').value) || 0;
+            });
+
+            document.getElementById('totalDebit').textContent = totalDebit.toFixed(2);
+            document.getElementById('totalCredit').textContent = totalCredit.toFixed(2);
+
+            const status = document.getElementById('balanceStatus');
+            const rowCount = document.querySelectorAll('#linesBody tr').length;
+            const balanced = rowCount >= 2 && totalDebit > 0 && totalDebit.toFixed(2) === totalCredit.toFixed(2);
+
+            status.classList.remove('alert-success', 'alert-warning');
+            if (balanced) {
+                status.classList.add('alert-success');
+                status.textContent = '@L["EntryBalanced"]';
+            } else {
+                status.classList.add('alert-warning');
+                status.textContent = '@L["EntryNotBalancedHint"]';
+            }
+
+            return balanced;
+        }
+
+        document.getElementById('addLineBtn').addEventListener('click', () => addLine());
+
+        document.getElementById('entryForm').addEventListener('submit', function (e) {
+            if (document.querySelectorAll('#linesBody tr').length < 2) {
+                e.preventDefault();
+                document.getElementById('linesValidation').textContent = '@L["EntryNeedsAtLeastTwoLines"]';
+                return;
+            }
+
+            if (!recalcTotals()) {
+                e.preventDefault();
+                document.getElementById('linesValidation').textContent = '@L["EntryNotBalancedHint"]';
+            }
+        });
+
+        addLine();
+        addLine();
+        recalcTotals();
+    </script>
 }
