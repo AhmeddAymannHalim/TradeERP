@@ -53,7 +53,7 @@ namespace TradeERP.BLL.Services.Definitions
             return await _unitOfWork.BillMasters.PostBillAsync(id);
         }
 
-        public async Task<int> GetNewBillMasterCodeAsync()
+        public async Task<string> GetNewBillMasterCodeAsync()
         {
             return await _unitOfWork.BillMasters.GetNewCodeAsync();
         }

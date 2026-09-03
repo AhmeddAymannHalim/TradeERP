@@ -86,9 +86,11 @@ namespace TradeERP.DAL.Repositories.Definitions
                 bill.Amount = amount;
                 bill.IsPosted = true;
 
+                var entryCode = await GetNextEntryCodeAsync();
+
                 var entryMaster = new EntryMaster
                 {
-                    Code = $"JE-{bill.Code}",
+                    Code = entryCode,
                     EntryDate = bill.BillDate,
                     Description = $"Auto-posted from Bill {bill.Code}",
                     SourceBillMasterId = bill.Id
@@ -99,7 +101,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                 await _context.Set<EntryDetails>().AddRangeAsync(
                     new EntryDetails
                     {
-                        Code = $"JE-{bill.Code}-D",
+                        Code = $"{entryCode}-D",
                         EntryMasterId = entryMaster.Id,
                         LedgerAccountId = debitAccountId,
                         DebitAmount = amount,
@@ -107,7 +109,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                     },
                     new EntryDetails
                     {
-                        Code = $"JE-{bill.Code}-C",
+                        Code = $"{entryCode}-C",
                         EntryMasterId = entryMaster.Id,
                         LedgerAccountId = creditAccountId,
                         DebitAmount = 0,
@@ -133,6 +135,8 @@ namespace TradeERP.DAL.Repositories.Definitions
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                bill.Code = await GetNextBillCodeAsync();
+
                 await _context.Set<BillMaster>().AddAsync(bill);
                 await _context.SaveChangesAsync();
 
@@ -224,15 +228,34 @@ namespace TradeERP.DAL.Repositories.Definitions
             return await base.DeleteAsync(id);
         }
 
-        public async Task<int> GetNewCodeAsync()
+        public async Task<string> GetNewCodeAsync()
         {
-            var codes = await _context.Set<BillMaster>().Select(b => b.Code).ToListAsync();
+            var setting = await _context.Set<BillSetting>().AsNoTracking().FirstOrDefaultAsync();
+            return setting == null ? "1" : $"{setting.Prefix}{setting.NextNumber:D5}";
+        }
 
-            return codes
-                .Where(c => int.TryParse(c, out _))
-                .Select(int.Parse)
-                .DefaultIfEmpty(0)
-                .Max() + 1;
+        private async Task<string> GetNextBillCodeAsync()
+        {
+            var setting = await _context.Set<BillSetting>().FirstOrDefaultAsync();
+            if (setting == null)
+                return DateTime.UtcNow.Ticks.ToString();
+
+            var code = $"{setting.Prefix}{setting.NextNumber:D5}";
+            setting.NextNumber++;
+            await _context.SaveChangesAsync();
+            return code;
+        }
+
+        private async Task<string> GetNextEntryCodeAsync()
+        {
+            var setting = await _context.Set<EntrySetting>().FirstOrDefaultAsync();
+            if (setting == null)
+                return $"JE-{DateTime.UtcNow.Ticks}";
+
+            var code = $"{setting.Prefix}{setting.NextNumber:D5}";
+            setting.NextNumber++;
+            await _context.SaveChangesAsync();
+            return code;
         }
 
         public async Task<PaginatedResult<BillMaster>> GetPagedAsync(int pageNo, string? searchString)

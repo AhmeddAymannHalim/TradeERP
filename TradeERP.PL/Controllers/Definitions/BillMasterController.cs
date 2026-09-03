@@ -47,7 +47,7 @@ namespace TradeERP.PL.Controllers.Definitions
             var newCode = await _services.GetNewBillMasterCodeAsync();
             var model = new BillMasterViewModel
             {
-                Code = newCode.ToString(),
+                Code = newCode,
                 BillDate = DateTime.Today
             };
 

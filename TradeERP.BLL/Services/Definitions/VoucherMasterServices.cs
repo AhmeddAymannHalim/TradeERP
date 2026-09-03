@@ -40,7 +40,7 @@ namespace TradeERP.BLL.Services.Definitions
             return await _unitOfWork.VoucherMasters.DeleteAsync(id);
         }
 
-        public async Task<int> GetNewVoucherMasterCodeAsync()
+        public async Task<string> GetNewVoucherMasterCodeAsync()
         {
             return await _unitOfWork.VoucherMasters.GetNewCodeAsync();
         }

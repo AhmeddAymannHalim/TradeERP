@@ -47,7 +47,7 @@ namespace TradeERP.PL.Controllers.Definitions
             var newCode = await _services.GetNewVoucherMasterCodeAsync();
             var model = new VoucherMasterViewModel
             {
-                Code = newCode.ToString(),
+                Code = newCode,
                 VoucherDate = DateTime.Today
             };
 

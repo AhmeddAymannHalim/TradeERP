@@ -14,15 +14,22 @@ namespace TradeERP.DAL.Repositories.Definitions
 
         public VoucherMasterRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<int> GetNewCodeAsync()
+        public async Task<string> GetNewCodeAsync()
         {
-            var codes = await _context.Set<VoucherMaster>().Select(v => v.Code).ToListAsync();
+            var count = await _context.Set<VoucherMaster>().CountAsync();
+            return $"VCH-{count + 1:D5}";
+        }
 
-            return codes
-                .Where(c => int.TryParse(c, out _))
-                .Select(int.Parse)
-                .DefaultIfEmpty(0)
-                .Max() + 1;
+        private async Task<string> GetNextEntryCodeAsync()
+        {
+            var setting = await _context.Set<EntrySetting>().FirstOrDefaultAsync();
+            if (setting == null)
+                return $"JE-{DateTime.UtcNow.Ticks}";
+
+            var code = $"{setting.Prefix}{setting.NextNumber:D5}";
+            setting.NextNumber++;
+            await _context.SaveChangesAsync();
+            return code;
         }
 
         public async Task<PaginatedResult<VoucherMaster>> GetPagedAsync(int pageNo, string? searchString)
@@ -94,13 +101,16 @@ namespace TradeERP.DAL.Repositories.Definitions
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                voucher.Code = await GetNewCodeAsync();
                 voucher.IsPosted = true;
                 await _context.Set<VoucherMaster>().AddAsync(voucher);
                 await _context.SaveChangesAsync();
 
+                var entryCode = await GetNextEntryCodeAsync();
+
                 var entryMaster = new EntryMaster
                 {
-                    Code = $"JE-{voucher.Code}",
+                    Code = entryCode,
                     EntryDate = voucher.VoucherDate,
                     Description = $"Auto-posted from Voucher {voucher.Code}",
                     SourceVoucherMasterId = voucher.Id
@@ -111,7 +121,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                 await _context.Set<EntryDetails>().AddRangeAsync(
                     new EntryDetails
                     {
-                        Code = $"JE-{voucher.Code}-D",
+                        Code = $"{entryCode}-D",
                         EntryMasterId = entryMaster.Id,
                         LedgerAccountId = debitAccountId,
                         DebitAmount = voucher.Amount,
@@ -119,7 +129,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                     },
                     new EntryDetails
                     {
-                        Code = $"JE-{voucher.Code}-C",
+                        Code = $"{entryCode}-C",
                         EntryMasterId = entryMaster.Id,
                         LedgerAccountId = creditAccountId,
                         DebitAmount = 0,

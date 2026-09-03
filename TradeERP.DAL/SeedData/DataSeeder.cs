@@ -14,6 +14,22 @@ namespace TradeERP.DAL.SeedData
             await SeedTowns(context);
             await SeedVillages(context);
             await SeedSystemLedgerAccounts(context);
+            await SeedNumberingSettings(context);
+        }
+
+        private static async Task SeedNumberingSettings(ApplicationDbContext context)
+        {
+            if (!await context.BillSettings.AnyAsync())
+            {
+                context.BillSettings.Add(new BillSetting { Code = "1", Prefix = "INV-", NextNumber = 1 });
+            }
+
+            if (!await context.EntrySettings.AnyAsync())
+            {
+                context.EntrySettings.Add(new EntrySetting { Code = "1", Prefix = "JE-", NextNumber = 1 });
+            }
+
+            await context.SaveChangesAsync();
         }
 
         private static async Task SeedSystemLedgerAccounts(ApplicationDbContext context)
