@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Localization;
-using System.Security.Claims;
 using System.Text;
 using TradeERP.Shared;
 using TradeERP.Shared.Extensions;
@@ -40,13 +39,10 @@ namespace TradeERP.PL.Controllers.Common
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string? returnUrl = null)
+        public IActionResult Login(string? returnUrl = null)
         {
             if (_signInManager.IsSignedIn(User))
                 return RedirectToAction("Index", "Home");
-
-            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-            ViewBag.ExternalProviders = schemes.Select(s => s.Name).ToHashSet();
 
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
@@ -204,88 +200,6 @@ namespace TradeERP.PL.Controllers.Common
             }
 
             return Json(new { success = true, message = _localizer["PasswordResetSuccessfully"].Value, redirectUrl = Url.Action("Login") });
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> ExternalLogin(string provider, string? returnUrl = null)
-        {
-            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-            if (!schemes.Any(s => string.Equals(s.Name, provider, StringComparison.OrdinalIgnoreCase)))
-            {
-                _toastr.Error(_localizer["ExternalLoginError"]);
-                return RedirectToAction("Login");
-            }
-
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            return Challenge(properties, provider);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
-        {
-            if (remoteError != null)
-            {
-                _toastr.Error(_localizer["ExternalLoginError"]);
-                return RedirectToAction("Login");
-            }
-
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                _toastr.Error(_localizer["ExternalLoginError"]);
-                return RedirectToAction("Login");
-            }
-
-            var signInResult = await _signInManager.ExternalLoginSignInAsync(
-                info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-
-            if (signInResult.Succeeded)
-                return LocalRedirectOrHome(returnUrl);
-
-            if (signInResult.IsLockedOut)
-            {
-                _toastr.Error(_localizer["AccountLockedOut"]);
-                return RedirectToAction("Login");
-            }
-
-            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-            if (string.IsNullOrEmpty(email))
-            {
-                _toastr.Error(_localizer["ExternalLoginError"]);
-                return RedirectToAction("Login");
-            }
-
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-            {
-                user = new IdentityUser { UserName = email, Email = email, EmailConfirmed = true };
-                var createResult = await _userManager.CreateAsync(user);
-                if (!createResult.Succeeded)
-                {
-                    _toastr.Error(_localizer["ExternalLoginError"]);
-                    return RedirectToAction("Login");
-                }
-
-                await _userManager.AddToRoleAsync(user, TradeERP.DAL.SeedData.IdentitySeeder.EmployeeRole);
-            }
-
-            var addLoginResult = await _userManager.AddLoginAsync(user, info);
-            if (!addLoginResult.Succeeded)
-            {
-                _toastr.Error(_localizer["ExternalLoginError"]);
-                return RedirectToAction("Login");
-            }
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            return LocalRedirectOrHome(returnUrl);
-        }
-
-        private IActionResult LocalRedirectOrHome(string? returnUrl)
-        {
-            return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)
-                ? LocalRedirect(returnUrl)
-                : RedirectToAction("Index", "Home");
         }
     }
 }

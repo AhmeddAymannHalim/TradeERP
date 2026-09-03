@@ -14,9 +14,6 @@
          here in WebApplicationBuilderExtensions) plus the EF design-time tooling (`dotnet ef`
          runs against the startup project). AutoMapper itself is not referenced directly here -
          PL only calls TradeERP.BLL's AddBllServices(), which pulls AutoMapper in transitively. -->
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="8.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />

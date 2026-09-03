@@ -1,7 +1,4 @@
-using AspNet.Security.OAuth.Apple;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -33,7 +30,6 @@ namespace TradeERP.PL.Extensions
             builder.AddAppLocalization();
             builder.AddAppIdentity();
             builder.AddAppJwtAuth();
-            builder.AddAppExternalAuth();
             builder.AddAppEmail();
             builder.AddResponseCompressionConfigure();
             builder.AddAppSessionConfiguration();
@@ -101,50 +97,6 @@ namespace TradeERP.PL.Extensions
                         ClockSkew = TimeSpan.FromMinutes(1)
                     };
                 });
-        }
-
-        private static void AddAppExternalAuth(this WebApplicationBuilder builder)
-        {
-            var authBuilder = builder.Services.AddAuthentication();
-            var config = builder.Configuration;
-
-            var googleClientId = config["Authentication:Google:ClientId"];
-            var googleClientSecret = config["Authentication:Google:ClientSecret"];
-            if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
-            {
-                authBuilder.AddGoogle(options =>
-                {
-                    options.ClientId = googleClientId;
-                    options.ClientSecret = googleClientSecret;
-                });
-            }
-
-            var facebookAppId = config["Authentication:Facebook:AppId"];
-            var facebookAppSecret = config["Authentication:Facebook:AppSecret"];
-            if (!string.IsNullOrWhiteSpace(facebookAppId) && !string.IsNullOrWhiteSpace(facebookAppSecret))
-            {
-                authBuilder.AddFacebook(options =>
-                {
-                    options.AppId = facebookAppId;
-                    options.AppSecret = facebookAppSecret;
-                });
-            }
-
-            var appleClientId = config["Authentication:Apple:ClientId"];
-            var appleKeyId = config["Authentication:Apple:KeyId"];
-            var appleTeamId = config["Authentication:Apple:TeamId"];
-            var applePrivateKey = config["Authentication:Apple:PrivateKey"];
-            if (!string.IsNullOrWhiteSpace(appleClientId) && !string.IsNullOrWhiteSpace(appleKeyId)
-                && !string.IsNullOrWhiteSpace(appleTeamId) && !string.IsNullOrWhiteSpace(applePrivateKey))
-            {
-                authBuilder.AddApple(options =>
-                {
-                    options.ClientId = appleClientId;
-                    options.KeyId = appleKeyId;
-                    options.TeamId = appleTeamId;
-                    options.PrivateKey = (keyId, cancellationToken) => Task.FromResult(applePrivateKey.AsMemory());
-                });
-            }
         }
 
         private static void AddAppEmail(this WebApplicationBuilder builder)
