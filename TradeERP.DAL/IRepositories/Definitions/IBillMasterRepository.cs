@@ -7,5 +7,7 @@ namespace TradeERP.DAL.IRepositories.Definitions
     public interface IBillMasterRepository : IGenericRepository<BillMaster>
     {
         Task<PaginatedResult<BillMaster>> GetPagedAsync(int pageNo, string? searchString);
+        Task<BillMaster?> GetByIdWithDetailsAsync(int id);
+        Task<ResultMessage> PostBillAsync(int id);
     }
 }

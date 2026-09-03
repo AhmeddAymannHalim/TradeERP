@@ -17,6 +17,17 @@ namespace TradeERP.BLL.Validations.BillMaster
                 .WithMessage(localizer["Val.RequiredField"])
                 .Must((model, code) => !validator.IsCodeExist(model.Id, code))
                 .WithMessage(localizer["Val.CodeAlreadyExist"]);
+
+            RuleFor(x => x.BillType)
+                .IsInEnum()
+                .WithMessage(localizer["Val.RequiredField"]);
+
+            RuleFor(x => x)
+                .Must(x => x.BillType is Shared.Enums.BillType.Purchase or Shared.Enums.BillType.PurchaseReturn
+                    ? x.SupplierId.HasValue
+                    : x.CustomerId.HasValue)
+                .WithMessage(localizer["Val.RequiredField"])
+                .OverridePropertyName(nameof(BillMasterViewModel.CustomerId));
         }
     }
 }

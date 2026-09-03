@@ -118,6 +118,15 @@ namespace TradeERP.PL.Controllers.Definitions
             }
         }
 
+        public async Task<IActionResult> Post(int id)
+        {
+            var result = await _services.PostBillMaster(id);
+            if (!result.Success)
+                return Json(new { success = false, message = _localizer[result.Message ?? "ErrorWhileSaving"].Value });
+
+            return Json(new { success = true, message = _localizer["PostedSuccessfully"].Value });
+        }
+
         private async Task PopulateData(BillMasterViewModel model)
         {
             model.Customers = await _lookupService.CustomerLookupAsync();

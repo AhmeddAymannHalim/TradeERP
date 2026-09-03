@@ -30,6 +30,7 @@
                             <th>@L["BillDate"]</th>
                             <th>@L["BillType"]</th>
                             <th>@L["Amount"]</th>
+                            <th>@L["PostingStatus"]</th>
                             <th>@L["Actions"]</th>
                         </tr>
                     </thead>
@@ -43,8 +44,18 @@
                                     <td>@counter</td>
                                     <td>@item.Code</td>
                                     <td>@item.BillDate.ToShortDateString()</td>
-                                    <td>@item.BillType</td>
+                                    <td>@L[item.BillType.ToString()]</td>
                                     <td>@item.Amount</td>
+                                    <td>
+                                        @if (item.IsPosted)
+                                        {
+                                            <span class="badge bg-success">@L["Posted"]</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@L["Draft"]</span>
+                                        }
+                                    </td>
                                     <td>
                                         <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
                                             <i class="bi bi-pencil"></i>
@@ -60,7 +71,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="6">@L["NoData"]</td>
+                                <td colspan="7">@L["NoData"]</td>
                             </tr>
                         }
                     </tbody>

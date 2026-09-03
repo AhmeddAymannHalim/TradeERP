@@ -6,6 +6,9 @@ namespace TradeERP.DAL.Models
         public DateTime EntryDate { get; set; }
         public string Description { get; set; } = string.Empty;
 
+        public int? SourceBillMasterId { get; set; }
+        public BillMaster? SourceBillMaster { get; set; }
+
         public ICollection<EntryDetails> EntryDetails { get; set; } = new List<EntryDetails>();
     }
 }

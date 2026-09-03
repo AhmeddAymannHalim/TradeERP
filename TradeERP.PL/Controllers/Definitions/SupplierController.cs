@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using TradeERP.BLL.IServices.Definitions;
+using TradeERP.BLL.IServices.ICommons;
 using TradeERP.Shared;
 using TradeERP.Shared.Extensions;
 using TradeERP.Shared.HelperServices.Interfaces;
@@ -12,15 +13,18 @@ namespace TradeERP.PL.Controllers.Definitions
     public class SupplierController : Controller
     {
         private readonly ISupplierServices _services;
+        private readonly ILookupService _lookupService;
         private readonly IToastrService _toastr;
         private readonly IStringLocalizer<SharedResource> _localizer;
 
         public SupplierController(
             ISupplierServices services,
+            ILookupService lookupService,
             IToastrService toastr,
             IStringLocalizer<SharedResource> localizer)
         {
             _services = services;
+            _lookupService = lookupService;
             _toastr = toastr;
             _localizer = localizer;
         }
@@ -46,6 +50,7 @@ namespace TradeERP.PL.Controllers.Definitions
                 Code = newCode.ToString()
             };
 
+            await PopulateData(model);
             return View(model);
         }
 
@@ -76,6 +81,7 @@ namespace TradeERP.PL.Controllers.Definitions
                 return RedirectToAction("Index");
             }
 
+            await PopulateData(model);
             return View(model);
         }
 
@@ -111,6 +117,11 @@ namespace TradeERP.PL.Controllers.Definitions
             {
                 return Json(new { success = false, errorMessage = _localizer["SomethingWentError"].Value });
             }
+        }
+
+        private async Task PopulateData(SupplierViewModel model)
+        {
+            model.LedgerAccounts = await _lookupService.LedgerAccountLookupAsync();
         }
     }
 }

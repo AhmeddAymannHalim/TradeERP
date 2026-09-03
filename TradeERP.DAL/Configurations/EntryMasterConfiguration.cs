@@ -9,6 +9,11 @@ namespace TradeERP.DAL.Configurations
         public void Configure(EntityTypeBuilder<EntryMaster> builder)
         {
             builder.HasIndex(e => e.Code);
+
+            builder.HasOne(e => e.SourceBillMaster)
+                .WithMany()
+                .HasForeignKey(e => e.SourceBillMasterId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

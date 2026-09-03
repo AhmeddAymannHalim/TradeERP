@@ -27,7 +27,12 @@
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="BillType" class="form-label">@L["BillType"]</label>
-                                <input asp-for="BillType" class="form-control" />
+                                <select asp-for="BillType" class="form-select">
+                                    @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.BillType>())
+                                    {
+                                        <option value="@item.Value">@L[item.Text]</option>
+                                    }
+                                </select>
                                 <span asp-validation-for="BillType" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
@@ -50,11 +55,9 @@
                                     }
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label asp-for="Amount" class="form-label">@L["Amount"]</label>
-                                <input asp-for="Amount" class="form-control" />
-                                <span asp-validation-for="Amount" class="text-danger"></span>
-                            </div>
+                        </div>
+                        <div class="alert alert-info mt-3 mb-0">
+                            @L["AmountComputedNote"]
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-center gap-2">

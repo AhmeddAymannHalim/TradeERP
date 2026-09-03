@@ -41,10 +41,12 @@ namespace TradeERP.BLL.MappingProfiles
                 .ForMember(d => d.Category, o => o.Ignore());
 
             CreateMap<Customer, CustomerViewModel>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(d => d.LedgerAccount, o => o.Ignore());
 
             CreateMap<Supplier, SupplierViewModel>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(d => d.LedgerAccount, o => o.Ignore());
 
             CreateMap<LedgerAccount, LedgerAccountViewModel>()
                 .ReverseMap();

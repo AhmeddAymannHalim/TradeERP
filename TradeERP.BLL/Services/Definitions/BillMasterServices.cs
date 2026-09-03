@@ -45,5 +45,10 @@ namespace TradeERP.BLL.Services.Definitions
         {
             return await _unitOfWork.BillMasters.DeleteAsync(id);
         }
+
+        public async Task<ResultMessage> PostBillMaster(int id)
+        {
+            return await _unitOfWork.BillMasters.PostBillAsync(id);
+        }
     }
 }

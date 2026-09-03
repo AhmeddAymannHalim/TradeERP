@@ -38,6 +38,17 @@
                                 <input asp-for="Address" class="form-control" />
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
+                            <div class="col-md-6">
+                                <label asp-for="LedgerAccountId" class="form-label">@L["LedgerAccount"]</label>
+                                <select asp-for="LedgerAccountId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.LedgerAccounts)
+                                    {
+                                        <option value="@item.Id">@item.ArName</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="LedgerAccountId" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-center gap-2">

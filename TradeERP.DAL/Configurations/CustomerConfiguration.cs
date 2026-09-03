@@ -9,6 +9,11 @@ namespace TradeERP.DAL.Configurations
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder.HasIndex(c => c.Code);
+
+            builder.HasOne(c => c.LedgerAccount)
+                .WithMany()
+                .HasForeignKey(c => c.LedgerAccountId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

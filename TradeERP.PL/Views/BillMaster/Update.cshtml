@@ -28,7 +28,16 @@
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="BillType" class="form-label">@L["BillType"]</label>
-                                <input asp-for="BillType" class="form-control" />
+                                <select asp-for="BillType" class="form-select" disabled="@Model.IsPosted">
+                                    @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.BillType>())
+                                    {
+                                        <option value="@item.Value">@L[item.Text]</option>
+                                    }
+                                </select>
+                                @if (Model.IsPosted)
+                                {
+                                    <input type="hidden" asp-for="BillType" />
+                                }
                                 <span asp-validation-for="BillType" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
@@ -53,13 +62,27 @@
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="Amount" class="form-label">@L["Amount"]</label>
-                                <input asp-for="Amount" class="form-control" />
-                                <span asp-validation-for="Amount" class="text-danger"></span>
+                                <input asp-for="Amount" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label d-block">@L["PostingStatus"]</label>
+                                @if (Model.IsPosted)
+                                {
+                                    <span class="badge bg-success">@L["Posted"]</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@L["Draft"]</span>
+                                }
                             </div>
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-center gap-2">
                         <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                        @if (!Model.IsPosted)
+                        {
+                            <a href="javascript:void(0)" onclick="postBill(@Model.Id)" class="btn btn-success px-5">@L["Post"]</a>
+                        }
                         <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
                     </div>
                 </div>
@@ -72,4 +95,17 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        function postBill(id) {
+            fetch('/BillMaster/Post/' + id, { method: 'GET' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+        }
+    </script>
 }

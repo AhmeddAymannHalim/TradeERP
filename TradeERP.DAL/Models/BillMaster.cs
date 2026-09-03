@@ -1,10 +1,12 @@
+using TradeERP.Shared.Enums;
+
 namespace TradeERP.DAL.Models
 {
     public class BillMaster : BaseEntity
     {
         public string Code { get; set; } = string.Empty;
         public DateTime BillDate { get; set; }
-        public string BillType { get; set; } = string.Empty;
+        public BillType BillType { get; set; }
 
         public int? CustomerId { get; set; }
         public Customer? Customer { get; set; }
@@ -13,6 +15,7 @@ namespace TradeERP.DAL.Models
         public Supplier? Supplier { get; set; }
 
         public decimal Amount { get; set; }
+        public bool IsPosted { get; set; }
 
         public ICollection<BillDetails> BillDetails { get; set; } = new List<BillDetails>();
     }

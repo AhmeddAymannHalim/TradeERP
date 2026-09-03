@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TradeERP.DAL.Data;
 using TradeERP.DAL.Models;
+using TradeERP.Shared.Constants;
 
 namespace TradeERP.DAL.SeedData
 {
@@ -12,6 +13,33 @@ namespace TradeERP.DAL.SeedData
             await SeedGovs(context);
             await SeedTowns(context);
             await SeedVillages(context);
+            await SeedSystemLedgerAccounts(context);
+        }
+
+        private static async Task SeedSystemLedgerAccounts(ApplicationDbContext context)
+        {
+            if (await context.LedgerAccounts.AnyAsync(a =>
+                    a.Code == SystemLedgerAccounts.SalesRevenue || a.Code == SystemLedgerAccounts.PurchaseExpense))
+                return;
+
+            context.LedgerAccounts.AddRange(
+                new LedgerAccount
+                {
+                    Code = SystemLedgerAccounts.SalesRevenue,
+                    ArName = "إيرادات المبيعات",
+                    EnName = "Sales Revenue",
+                    AccountType = "Revenue"
+                },
+                new LedgerAccount
+                {
+                    Code = SystemLedgerAccounts.PurchaseExpense,
+                    ArName = "مصروفات المشتريات",
+                    EnName = "Purchase Expense",
+                    AccountType = "Expense"
+                }
+            );
+
+            await context.SaveChangesAsync();
         }
 
         private static async Task SeedCountries(ApplicationDbContext context)

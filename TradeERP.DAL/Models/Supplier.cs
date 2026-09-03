@@ -8,5 +8,8 @@ namespace TradeERP.DAL.Models
 
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+
+        public int? LedgerAccountId { get; set; }
+        public LedgerAccount? LedgerAccount { get; set; }
     }
 }
