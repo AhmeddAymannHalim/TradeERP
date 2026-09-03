@@ -14,14 +14,27 @@ namespace TradeERP.DAL.Repositories.Definitions
 
         public VoucherMasterRepository(ApplicationDbContext context) : base(context) { }
 
+        /// <summary>Preview only (e.g. to prefill the Create form) - not reserved, may collide
+        /// with a concurrent create. The authoritative code is assigned inside AddAndPostAsync's
+        /// transaction by GetNextVoucherCodeAsync, which is lock-protected.</summary>
         public async Task<string> GetNewCodeAsync()
         {
             var count = await _context.Set<VoucherMaster>().CountAsync();
             return $"VCH-{count + 1:D5}";
         }
 
+        private async Task<string> GetNextVoucherCodeAsync()
+        {
+            await SqlLockHelper.AcquireTransactionLockAsync(_context, "Sequence_VoucherMaster");
+
+            var count = await _context.Set<VoucherMaster>().CountAsync();
+            return $"VCH-{count + 1:D5}";
+        }
+
         private async Task<string> GetNextEntryCodeAsync()
         {
+            await SqlLockHelper.AcquireTransactionLockAsync(_context, "Sequence_EntrySetting");
+
             var setting = await _context.Set<EntrySetting>().FirstOrDefaultAsync();
             if (setting == null)
                 return $"JE-{DateTime.UtcNow.Ticks}";
@@ -66,6 +79,9 @@ namespace TradeERP.DAL.Repositories.Definitions
 
         public async Task<ResultMessage> AddAndPostAsync(VoucherMaster voucher)
         {
+            if (await _context.Set<AccountingPeriod>().AnyAsync(p => p.IsClosed && voucher.VoucherDate >= p.StartDate && voucher.VoucherDate <= p.EndDate))
+                return new ResultMessage { Success = false, Message = "PeriodIsClosed" };
+
             int partyLedgerAccountId;
 
             if (voucher.VoucherType == VoucherType.Receipt)
@@ -101,7 +117,7 @@ namespace TradeERP.DAL.Repositories.Definitions
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                voucher.Code = await GetNewCodeAsync();
+                voucher.Code = await GetNextVoucherCodeAsync();
                 voucher.IsPosted = true;
                 await _context.Set<VoucherMaster>().AddAsync(voucher);
                 await _context.SaveChangesAsync();
@@ -113,6 +129,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                     Code = entryCode,
                     EntryDate = voucher.VoucherDate,
                     Description = $"Auto-posted from Voucher {voucher.Code}",
+                    EntryType = EntryType.VoucherPosting,
                     SourceVoucherMasterId = voucher.Id
                 };
                 await _context.Set<EntryMaster>().AddAsync(entryMaster);

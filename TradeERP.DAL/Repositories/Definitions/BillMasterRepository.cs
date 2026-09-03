@@ -24,6 +24,13 @@ namespace TradeERP.DAL.Repositories.Definitions
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
+        public async Task<EntryMaster?> GetJournalEntryAsync(int billMasterId)
+        {
+            return await _context.Set<EntryMaster>()
+                .Include(e => e.EntryDetails).ThenInclude(d => d.LedgerAccount)
+                .FirstOrDefaultAsync(e => e.SourceBillMasterId == billMasterId);
+        }
+
         public async Task<ResultMessage> PostBillAsync(int id)
         {
             var bill = await GetByIdWithDetailsAsync(id);
@@ -35,6 +42,9 @@ namespace TradeERP.DAL.Repositories.Definitions
 
             if (!bill.BillDetails.Any())
                 return new ResultMessage { Success = false, Message = "BillHasNoDetails" };
+
+            if (await _context.Set<AccountingPeriod>().AnyAsync(p => p.IsClosed && bill.BillDate >= p.StartDate && bill.BillDate <= p.EndDate))
+                return new ResultMessage { Success = false, Message = "PeriodIsClosed" };
 
             var isPurchaseSide = bill.BillType is BillType.Purchase or BillType.PurchaseReturn;
 
@@ -57,6 +67,9 @@ namespace TradeERP.DAL.Repositories.Definitions
 
             int debitAccountId;
             int creditAccountId;
+            var stockMovement = bill.BillType is BillType.Sales or BillType.PurchaseReturn
+                ? StockMovementType.Out
+                : StockMovementType.In;
 
             switch (bill.BillType)
             {
@@ -83,6 +96,51 @@ namespace TradeERP.DAL.Repositories.Definitions
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                // Serialize any other post touching the same product(s) - held for the
+                // lifetime of this transaction - so the stock check below can't race with
+                // a concurrent post reading the same pre-write snapshot (oversell guard).
+                foreach (var productId in bill.BillDetails.Select(d => d.ProductId).Distinct())
+                {
+                    await SqlLockHelper.AcquireTransactionLockAsync(_context, $"Stock_Product_{productId}");
+                }
+
+                // Compute stock movements (and reject if an Out would take a product negative)
+                // now that concurrent posts for the same product(s) are locked out.
+                var stockMoves = new List<(int ProductId, decimal Quantity, decimal UnitCost)>();
+                var pendingBalance = new Dictionary<int, decimal>();
+
+                foreach (var line in bill.BillDetails)
+                {
+                    decimal unitCost;
+                    if (bill.BillType is BillType.Purchase or BillType.PurchaseReturn)
+                    {
+                        unitCost = line.UnitPrice;
+                    }
+                    else
+                    {
+                        var (_, avgCost) = await GetStockPositionAsync(line.ProductId);
+                        unitCost = avgCost;
+                    }
+
+                    if (stockMovement == StockMovementType.Out)
+                    {
+                        if (!pendingBalance.TryGetValue(line.ProductId, out var available))
+                        {
+                            (available, _) = await GetStockPositionAsync(line.ProductId);
+                        }
+
+                        if (available < line.Quantity)
+                        {
+                            await transaction.RollbackAsync();
+                            return new ResultMessage { Success = false, Message = "InsufficientStock" };
+                        }
+
+                        pendingBalance[line.ProductId] = available - line.Quantity;
+                    }
+
+                    stockMoves.Add((line.ProductId, line.Quantity, unitCost));
+                }
+
                 bill.Amount = amount;
                 bill.IsPosted = true;
 
@@ -93,6 +151,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                     Code = entryCode,
                     EntryDate = bill.BillDate,
                     Description = $"Auto-posted from Bill {bill.Code}",
+                    EntryType = EntryType.BillPosting,
                     SourceBillMasterId = bill.Id
                 };
                 await _context.Set<EntryMaster>().AddAsync(entryMaster);
@@ -117,6 +176,19 @@ namespace TradeERP.DAL.Repositories.Definitions
                     });
                 await _context.SaveChangesAsync();
 
+                var stockLedgerRows = stockMoves.Select(m => new StockLedger
+                {
+                    ProductId = m.ProductId,
+                    MovementDate = bill.BillDate,
+                    MovementType = stockMovement,
+                    Quantity = m.Quantity,
+                    UnitCost = m.UnitCost,
+                    SourceType = StockSourceType.Bill,
+                    SourceId = bill.Id
+                });
+                await _context.Set<StockLedger>().AddRangeAsync(stockLedgerRows);
+                await _context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
                 return new ResultMessage { Success = true };
             }
@@ -125,6 +197,31 @@ namespace TradeERP.DAL.Repositories.Definitions
                 await transaction.RollbackAsync();
                 return new ResultMessage { Success = false, Message = ex.Message };
             }
+        }
+
+        /// <summary>
+        /// Current on-hand quantity and weighted-average cost for a product, derived from
+        /// StockLedger (remaining value / remaining qty = SUM(In) - SUM(Out at the cost each
+        /// Out was recorded at), never a stored running balance.
+        /// </summary>
+        private async Task<(decimal Quantity, decimal AverageCost)> GetStockPositionAsync(int productId)
+        {
+            var moves = await _context.Set<StockLedger>()
+                .AsNoTracking()
+                .Where(s => s.ProductId == productId)
+                .Select(s => new { s.MovementType, s.Quantity, s.UnitCost })
+                .ToListAsync();
+
+            var inQty = moves.Where(m => m.MovementType == StockMovementType.In).Sum(m => m.Quantity);
+            var inValue = moves.Where(m => m.MovementType == StockMovementType.In).Sum(m => m.Quantity * m.UnitCost);
+            var outQty = moves.Where(m => m.MovementType == StockMovementType.Out).Sum(m => m.Quantity);
+            var outValue = moves.Where(m => m.MovementType == StockMovementType.Out).Sum(m => m.Quantity * m.UnitCost);
+
+            var remainingQty = inQty - outQty;
+            var remainingValue = inValue - outValue;
+            var averageCost = remainingQty > 0 ? remainingValue / remainingQty : 0;
+
+            return (remainingQty, averageCost);
         }
 
         public async Task<ResultMessage> AddWithDetailsAsync(BillMaster bill, List<BillDetails> lines)
@@ -158,6 +255,19 @@ namespace TradeERP.DAL.Repositories.Definitions
                 await transaction.RollbackAsync();
                 return new ResultMessage { Success = false, Message = ex.Message };
             }
+        }
+
+        public async Task<ResultMessage> AddWithDetailsAndPostAsync(BillMaster bill, List<BillDetails> lines)
+        {
+            var addResult = await AddWithDetailsAsync(bill, lines);
+            if (!addResult.Success)
+                return addResult;
+
+            var postResult = await PostBillAsync(bill.Id);
+            if (!postResult.Success)
+                return new ResultMessage { Success = true, Data = postResult.Message };
+
+            return new ResultMessage { Success = true };
         }
 
         public async Task<ResultMessage> UpdateWithDetailsAsync(BillMaster bill, List<BillDetails> lines)
@@ -236,6 +346,8 @@ namespace TradeERP.DAL.Repositories.Definitions
 
         private async Task<string> GetNextBillCodeAsync()
         {
+            await SqlLockHelper.AcquireTransactionLockAsync(_context, "Sequence_BillSetting");
+
             var setting = await _context.Set<BillSetting>().FirstOrDefaultAsync();
             if (setting == null)
                 return DateTime.UtcNow.Ticks.ToString();
@@ -248,6 +360,8 @@ namespace TradeERP.DAL.Repositories.Definitions
 
         private async Task<string> GetNextEntryCodeAsync()
         {
+            await SqlLockHelper.AcquireTransactionLockAsync(_context, "Sequence_EntrySetting");
+
             var setting = await _context.Set<EntrySetting>().FirstOrDefaultAsync();
             if (setting == null)
                 return $"JE-{DateTime.UtcNow.Ticks}";

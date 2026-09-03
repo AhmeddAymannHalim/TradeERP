@@ -8,7 +8,7 @@ namespace TradeERP.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<BillMaster> builder)
         {
-            builder.HasIndex(b => b.Code);
+            builder.HasIndex(b => b.Code).IsUnique();
 
             builder.Property(b => b.Amount).HasColumnType("decimal(18,2)");
 

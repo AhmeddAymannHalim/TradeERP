@@ -8,7 +8,7 @@ namespace TradeERP.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<EntryMaster> builder)
         {
-            builder.HasIndex(e => e.Code);
+            builder.HasIndex(e => e.Code).IsUnique();
 
             builder.HasOne(e => e.SourceBillMaster)
                 .WithMany()

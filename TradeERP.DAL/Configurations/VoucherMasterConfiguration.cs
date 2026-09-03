@@ -8,7 +8,7 @@ namespace TradeERP.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<VoucherMaster> builder)
         {
-            builder.HasIndex(v => v.Code);
+            builder.HasIndex(v => v.Code).IsUnique();
 
             builder.Property(v => v.Amount).HasColumnType("decimal(18,2)");
 
