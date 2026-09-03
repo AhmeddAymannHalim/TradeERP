@@ -12,5 +12,6 @@ namespace TradeERP.BLL.IServices.Definitions
         Task<ResultMessage> DeleteBillMaster(int id);
         Task<ResultMessage> PostBillMaster(int id);
         Task<string> GetNewBillMasterCodeAsync();
+        Task<JournalEntryViewModel?> GetJournalEntryForBill(int billId);
     }
 }

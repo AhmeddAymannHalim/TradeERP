@@ -1,3 +1,4 @@
+using TradeERP.Shared.Enums;
 using TradeERP.Shared.ViewModels.Commons;
 
 namespace TradeERP.Shared.ViewModels.Definitions
@@ -10,7 +11,7 @@ namespace TradeERP.Shared.ViewModels.Definitions
         public string EnName { get; set; } = string.Empty;
 
         public int? CategoryId { get; set; }
-        public string Unit { get; set; } = string.Empty;
+        public ProductUnit Unit { get; set; }
         public decimal Price { get; set; }
 
         public List<LookupItem> Categories { get; set; } = new List<LookupItem>();

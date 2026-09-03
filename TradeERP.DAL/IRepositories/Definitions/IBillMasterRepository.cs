@@ -9,8 +9,10 @@ namespace TradeERP.DAL.IRepositories.Definitions
         Task<PaginatedResult<BillMaster>> GetPagedAsync(int pageNo, string? searchString);
         Task<string> GetNewCodeAsync();
         Task<BillMaster?> GetByIdWithDetailsAsync(int id);
+        Task<EntryMaster?> GetJournalEntryAsync(int billMasterId);
         Task<ResultMessage> PostBillAsync(int id);
         Task<ResultMessage> AddWithDetailsAsync(BillMaster bill, List<BillDetails> lines);
+        Task<ResultMessage> AddWithDetailsAndPostAsync(BillMaster bill, List<BillDetails> lines);
         Task<ResultMessage> UpdateWithDetailsAsync(BillMaster bill, List<BillDetails> lines);
     }
 }

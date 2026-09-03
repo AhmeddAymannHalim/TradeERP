@@ -34,26 +34,45 @@ namespace TradeERP.DAL.SeedData
 
         private static async Task SeedSystemLedgerAccounts(ApplicationDbContext context)
         {
-            if (await context.LedgerAccounts.AnyAsync(a =>
-                    a.Code == SystemLedgerAccounts.SalesRevenue || a.Code == SystemLedgerAccounts.PurchaseExpense))
-                return;
+            var existingCodes = await context.LedgerAccounts
+                .Where(a => a.Code == SystemLedgerAccounts.SalesRevenue
+                    || a.Code == SystemLedgerAccounts.PurchaseExpense
+                    || a.Code == SystemLedgerAccounts.OpeningBalanceEquity)
+                .Select(a => a.Code)
+                .ToListAsync();
 
-            context.LedgerAccounts.AddRange(
-                new LedgerAccount
+            if (!existingCodes.Contains(SystemLedgerAccounts.SalesRevenue))
+            {
+                context.LedgerAccounts.Add(new LedgerAccount
                 {
                     Code = SystemLedgerAccounts.SalesRevenue,
                     ArName = "إيرادات المبيعات",
                     EnName = "Sales Revenue",
                     AccountType = "Revenue"
-                },
-                new LedgerAccount
+                });
+            }
+
+            if (!existingCodes.Contains(SystemLedgerAccounts.PurchaseExpense))
+            {
+                context.LedgerAccounts.Add(new LedgerAccount
                 {
                     Code = SystemLedgerAccounts.PurchaseExpense,
                     ArName = "مصروفات المشتريات",
                     EnName = "Purchase Expense",
                     AccountType = "Expense"
-                }
-            );
+                });
+            }
+
+            if (!existingCodes.Contains(SystemLedgerAccounts.OpeningBalanceEquity))
+            {
+                context.LedgerAccounts.Add(new LedgerAccount
+                {
+                    Code = SystemLedgerAccounts.OpeningBalanceEquity,
+                    ArName = "الأرصدة الافتتاحية",
+                    EnName = "Opening Balance Equity",
+                    AccountType = "Equity"
+                });
+            }
 
             await context.SaveChangesAsync();
         }

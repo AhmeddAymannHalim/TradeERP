@@ -116,6 +116,12 @@
                             <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
                             <a href="javascript:void(0)" onclick="postBill(@Model.Id)" class="btn btn-success px-5">@L["Post"]</a>
                         }
+                        else
+                        {
+                            <a href="javascript:void(0)" onclick="viewJournalEntry(@Model.Id)" class="btn btn-info px-5">
+                                <i class="bi bi-journal-text"></i> @L["JournalEntry"]
+                            </a>
+                        }
                         <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
                     </div>
                 </div>
@@ -215,8 +221,38 @@
                     if (data.success) {
                         location.reload();
                     } else {
-                        alert(data.message);
+                        showToast(data.message, 'error');
                     }
+                });
+        }
+
+        const isArabic = @Html.Raw(isArabicCulture ? "true" : "false");
+
+        function viewJournalEntry(id) {
+            fetch('/BillMaster/JournalEntry/' + id)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) {
+                        showToast(data.message, 'error');
+                        return;
+                    }
+
+                    const rows = data.entry.Lines.map(l => `
+                        <tr>
+                            <td>${isArabic ? l.LedgerAccountArName : l.LedgerAccountEnName}</td>
+                            <td>${l.DebitAmount > 0 ? l.DebitAmount.toFixed(2) : ''}</td>
+                            <td>${l.CreditAmount > 0 ? l.CreditAmount.toFixed(2) : ''}</td>
+                        </tr>
+                    `).join('');
+
+                    Swal.fire({
+                        title: data.entry.Code,
+                        html: `<table class="table table-bordered text-center">
+                                 <thead><tr><th>@L["Account"]</th><th>@L["DebitAmount"]</th><th>@L["CreditAmount"]</th></tr></thead>
+                                 <tbody>${rows}</tbody>
+                               </table>`,
+                        width: 600
+                    });
                 });
         }
     </script>

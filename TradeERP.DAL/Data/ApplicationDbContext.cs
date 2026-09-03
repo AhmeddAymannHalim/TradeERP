@@ -39,6 +39,8 @@ namespace TradeERP.DAL.Data
         public DbSet<BillSetting> BillSettings => Set<BillSetting>();
         public DbSet<EntrySetting> EntrySettings => Set<EntrySetting>();
         public DbSet<VoucherMaster> VoucherMasters => Set<VoucherMaster>();
+        public DbSet<StockLedger> StockLedgers => Set<StockLedger>();
+        public DbSet<AccountingPeriod> AccountingPeriods => Set<AccountingPeriod>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

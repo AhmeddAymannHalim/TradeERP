@@ -22,6 +22,12 @@
                         <span>@L["Users"]</span>
                     </a>
                 </li>
+                <li>
+                    <a asp-controller="AccountingPeriod" asp-action="Index">
+                        <i class="bi bi-calendar-check text-primary"></i>
+                        <span>@L["AccountingPeriodList"]</span>
+                    </a>
+                </li>
             }
 
             <li class="side-nav-title">@L["Modules"]</li>
@@ -49,7 +55,9 @@
                 </a>
                 <div class="collapse show" id="reportsMenu">
                     <ul class="nav-second-level">
-                        <li><a class="disabled" href="#">@L["Reports"] <span class="badge bg-secondary">@L["Soon"]</span></a></li>
+                        <li><a asp-controller="Reports" asp-action="TrialBalance">@L["TrialBalance"]</a></li>
+                        <li><a asp-controller="Reports" asp-action="StatementOfAccount">@L["StatementOfAccount"]</a></li>
+                        <li><a asp-controller="Reports" asp-action="StockValuation">@L["StockValuation"]</a></li>
                     </ul>
                 </div>
             </li>
@@ -64,6 +72,7 @@
                     <ul class="nav-second-level">
                         <li><a asp-controller="Category" asp-action="Index">@L["CategoryList"]</a></li>
                         <li><a asp-controller="Product" asp-action="Index">@L["ProductList"]</a></li>
+                        <li><a asp-controller="StockLedger" asp-action="Index">@L["StockLedgerList"]</a></li>
                     </ul>
                 </div>
             </li>
@@ -110,6 +119,7 @@
                         <li><a asp-controller="BillSetting" asp-action="Index">@L["BillSettingList"]</a></li>
                         <li><a asp-controller="EntrySetting" asp-action="Index">@L["EntrySettingList"]</a></li>
                         <li><a asp-controller="VoucherMaster" asp-action="Index">@L["VoucherMasterList"]</a></li>
+                        <li><a asp-controller="OpeningBalance" asp-action="Create">@L["InsertNewOpeningBalance"]</a></li>
                     </ul>
                 </div>
             </li>

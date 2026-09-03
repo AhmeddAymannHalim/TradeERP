@@ -65,10 +65,14 @@ namespace TradeERP.PL.Controllers.Definitions
             if (!result.Success)
                 return Json(new { success = false, message = result.Message ?? _localizer["ErrorWhileSaving"].Value });
 
+            var message = result.Data != null
+                ? _localizer["SavedButNotPosted"].Value + " " + _localizer[result.Data].Value
+                : _localizer["SavedAndPostedSuccessfully"].Value;
+
             return Json(new
             {
                 success = true,
-                message = _localizer["SavedSuccessfully"].Value,
+                message,
                 redirectUrl = Url.Action("Index")
             });
         }
@@ -127,6 +131,15 @@ namespace TradeERP.PL.Controllers.Definitions
                 return Json(new { success = false, message = _localizer[result.Message ?? "ErrorWhileSaving"].Value });
 
             return Json(new { success = true, message = _localizer["PostedSuccessfully"].Value });
+        }
+
+        public async Task<IActionResult> JournalEntry(int id)
+        {
+            var entry = await _services.GetJournalEntryForBill(id);
+            if (entry == null)
+                return Json(new { success = false, message = _localizer["RecordNotFound"].Value });
+
+            return Json(new { success = true, entry });
         }
 
         private async Task PopulateData(BillMasterViewModel model)

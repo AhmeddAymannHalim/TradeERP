@@ -76,6 +76,13 @@ namespace TradeERP.BLL.MappingProfiles
             CreateMap<EntryMaster, EntryMasterViewModel>()
                 .ReverseMap();
 
+            CreateMap<EntryMaster, JournalEntryViewModel>()
+                .ForMember(d => d.Lines, o => o.MapFrom(s => s.EntryDetails));
+
+            CreateMap<EntryDetails, JournalEntryLineViewModel>()
+                .ForMember(d => d.LedgerAccountArName, o => o.MapFrom(s => s.LedgerAccount.ArName))
+                .ForMember(d => d.LedgerAccountEnName, o => o.MapFrom(s => s.LedgerAccount.EnName));
+
             CreateMap<EntryDetails, EntryDetailsViewModel>()
                 .ForMember(d => d.EntryMasterCode, o => o.MapFrom(s => s.EntryMaster != null ? s.EntryMaster.Code : string.Empty))
                 .ForMember(d => d.LedgerAccountArName, o => o.MapFrom(s => s.LedgerAccount != null ? s.LedgerAccount.ArName : string.Empty))
@@ -89,6 +96,13 @@ namespace TradeERP.BLL.MappingProfiles
                 .ForMember(d => d.Customer, o => o.Ignore())
                 .ForMember(d => d.Supplier, o => o.Ignore())
                 .ForMember(d => d.TreasuryLedgerAccount, o => o.Ignore());
+
+            CreateMap<AccountingPeriod, AccountingPeriodViewModel>()
+                .ReverseMap();
+
+            CreateMap<StockLedger, StockLedgerViewModel>()
+                .ForMember(d => d.ProductArName, o => o.MapFrom(s => s.Product.ArName))
+                .ForMember(d => d.ProductEnName, o => o.MapFrom(s => s.Product.EnName));
 
             CreateMap<BillSetting, BillSettingViewModel>()
                 .ReverseMap();

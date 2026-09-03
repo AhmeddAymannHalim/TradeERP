@@ -1,0 +1,64 @@
+@using System.Globalization
+@model OpeningBalanceViewModel
+@{
+    ViewBag.Title = L["InsertNewOpeningBalance"];
+    bool isArabicCulture = CultureInfo.CurrentUICulture.ToString().StartsWith("ar");
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-7">
+            <form asp-action="Create">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h4 class="fw-bold m-0">@L["InsertNewOpeningBalance"]</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center justify-content-center">
+                            <div class="col-md-6">
+                                <label asp-for="LedgerAccountId" class="form-label">@L["LedgerAccount"]</label>
+                                <select asp-for="LedgerAccountId" class="form-select">
+                                    <option value="">@L["Choose"]</option>
+                                    @foreach (var item in Model.LedgerAccounts)
+                                    {
+                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="LedgerAccountId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Direction" class="form-label">@L["Direction"]</label>
+                                <select asp-for="Direction" class="form-select">
+                                    @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.DebitCreditDirection>())
+                                    {
+                                        <option value="@item.Value">@L[item.Text]</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Amount" class="form-label">@L["Amount"]</label>
+                                <input asp-for="Amount" class="form-control" />
+                                <span asp-validation-for="Amount" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Date" class="form-label">@L["EntryDate"]</label>
+                                <input asp-for="Date" type="date" class="form-control" />
+                                <span asp-validation-for="Date" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
+                        <a asp-action="Index" asp-controller="EntryMaster" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -25,6 +25,9 @@ namespace TradeERP.DAL.UnitOfWork
         private IBillSettingRepository? _billSettings;
         private IEntrySettingRepository? _entrySettings;
         private IVoucherMasterRepository? _voucherMasters;
+        private IStockLedgerRepository? _stockLedgers;
+        private IReportsRepository? _reports;
+        private IAccountingPeriodRepository? _accountingPeriods;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -78,6 +81,15 @@ namespace TradeERP.DAL.UnitOfWork
 
         public IVoucherMasterRepository VoucherMasters
             => _voucherMasters ??= new VoucherMasterRepository(_context);
+
+        public IStockLedgerRepository StockLedgers
+            => _stockLedgers ??= new StockLedgerRepository(_context);
+
+        public IReportsRepository Reports
+            => _reports ??= new ReportsRepository(_context);
+
+        public IAccountingPeriodRepository AccountingPeriods
+            => _accountingPeriods ??= new AccountingPeriodRepository(_context);
 
         public Task<int> SaveChangesAsync() => _context.SaveChangesAsync();
     }

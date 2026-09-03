@@ -134,7 +134,7 @@
                 </td>
                 <td><input type="number" step="0.01" class="form-control line-qty" name="Lines[${idx}].Quantity" value="${data.quantity || ''}" /></td>
                 <td><input type="number" step="0.01" class="form-control line-price" name="Lines[${idx}].UnitPrice" value="${data.unitPrice || ''}" /></td>
-                <td><input type="text" class="form-control line-total" name="Lines[${idx}].LineTotal" value="${(data.lineTotal || 0).toFixed ? data.lineTotal.toFixed(2) : '0.00'}" readonly /></td>
+                <td><input type="text" class="form-control line-total" name="Lines[${idx}].LineTotal" value="${(data.lineTotal || 0).toFixed(2)}" readonly /></td>
                 <td class="text-center">
                     <button type="button" class="btn btn-danger btn-sm remove-line"><i class="bi bi-trash"></i></button>
                 </td>

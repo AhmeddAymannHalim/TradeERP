@@ -39,6 +39,10 @@ namespace TradeERP.BLL
             services.AddScoped<IBillSettingServices, BillSettingServices>();
             services.AddScoped<IEntrySettingServices, EntrySettingServices>();
             services.AddScoped<IVoucherMasterServices, VoucherMasterServices>();
+            services.AddScoped<IStockLedgerServices, StockLedgerServices>();
+            services.AddScoped<IOpeningBalanceServices, OpeningBalanceServices>();
+            services.AddScoped<IReportsServices, ReportsServices>();
+            services.AddScoped<IAccountingPeriodServices, AccountingPeriodServices>();
 
             services.AddValidatorsFromAssemblyContaining<EmployeeValidator>();
 

@@ -13,6 +13,45 @@ namespace TradeERP.DAL.Repositories.Definitions
 
         public EntryDetailsRepository(ApplicationDbContext context) : base(context) { }
 
+        public override async Task<ResultMessage> AddAsync(EntryDetails entity)
+        {
+            if (await IsParentEntrySystemGeneratedAsync(entity.EntryMasterId))
+                return new ResultMessage { Success = false, Message = "EntryIsSystemGenerated" };
+
+            return await base.AddAsync(entity);
+        }
+
+        public override async Task<ResultMessage> UpdateAsync(EntryDetails entity)
+        {
+            if (await IsParentEntrySystemGeneratedAsync(entity.EntryMasterId))
+                return new ResultMessage { Success = false, Message = "EntryIsSystemGenerated" };
+
+            return await base.UpdateAsync(entity);
+        }
+
+        public override async Task<ResultMessage> DeleteAsync(int id)
+        {
+            var existing = await _context.Set<EntryDetails>().AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+            if (existing == null)
+                return new ResultMessage { Success = false, Message = "RecordNotFound" };
+
+            if (await IsParentEntrySystemGeneratedAsync(existing.EntryMasterId))
+                return new ResultMessage { Success = false, Message = "EntryIsSystemGenerated" };
+
+            return await base.DeleteAsync(id);
+        }
+
+        private async Task<bool> IsParentEntrySystemGeneratedAsync(int entryMasterId)
+        {
+            var entryType = await _context.Set<EntryMaster>()
+                .AsNoTracking()
+                .Where(m => m.Id == entryMasterId)
+                .Select(m => m.EntryType)
+                .FirstOrDefaultAsync();
+
+            return entryType != TradeERP.Shared.Enums.EntryType.Manual;
+        }
+
         public async Task<PaginatedResult<EntryDetails>> GetPagedAsync(int pageNo, string? searchString)
         {
             var query = _context.Set<EntryDetails>().AsNoTracking()

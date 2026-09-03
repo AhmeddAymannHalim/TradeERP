@@ -1,3 +1,5 @@
+using TradeERP.Shared.Enums;
+
 namespace TradeERP.DAL.Models
 {
     public class Product : BaseEntity, ICodeDefinition
@@ -9,7 +11,7 @@ namespace TradeERP.DAL.Models
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
 
-        public string Unit { get; set; } = string.Empty;
+        public ProductUnit Unit { get; set; }
         public decimal Price { get; set; }
     }
 }

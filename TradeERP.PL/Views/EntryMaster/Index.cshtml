@@ -29,6 +29,7 @@
                             <th>@L["Code"]</th>
                             <th>@L["EntryDate"]</th>
                             <th>@L["Description"]</th>
+                            <th>@L["EntryType"]</th>
                             <th>@L["Actions"]</th>
                         </tr>
                     </thead>
@@ -43,13 +44,17 @@
                                     <td>@item.Code</td>
                                     <td>@item.EntryDate.ToShortDateString()</td>
                                     <td>@item.Description</td>
+                                    <td>@L[item.EntryType.ToString()]</td>
                                     <td>
                                         <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="javascript:void(0)" onclick="Delete('/EntryMaster/Delete/@item.Id')" class="btn btn-danger btn-sm">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
+                                        @if (item.EntryType == TradeERP.Shared.Enums.EntryType.Manual)
+                                        {
+                                            <a href="javascript:void(0)" onclick="Delete('/EntryMaster/Delete/@item.Id')" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        }
                                     </td>
                                 </tr>
                                 counter++;
@@ -58,7 +63,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="5">@L["NoData"]</td>
+                                <td colspan="6">@L["NoData"]</td>
                             </tr>
                         }
                     </tbody>

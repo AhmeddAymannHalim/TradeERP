@@ -33,7 +33,7 @@ namespace TradeERP.BLL.Services.Definitions
         {
             var model = _mapper.Map<TradeERP.DAL.Models.BillMaster>(viewModel);
             var lines = _mapper.Map<List<TradeERP.DAL.Models.BillDetails>>(viewModel.Lines);
-            return await _unitOfWork.BillMasters.AddWithDetailsAsync(model, lines);
+            return await _unitOfWork.BillMasters.AddWithDetailsAndPostAsync(model, lines);
         }
 
         public async Task<ResultMessage> UpdateBillMaster(BillMasterViewModel viewModel)
@@ -56,6 +56,12 @@ namespace TradeERP.BLL.Services.Definitions
         public async Task<string> GetNewBillMasterCodeAsync()
         {
             return await _unitOfWork.BillMasters.GetNewCodeAsync();
+        }
+
+        public async Task<JournalEntryViewModel?> GetJournalEntryForBill(int billId)
+        {
+            var entry = await _unitOfWork.BillMasters.GetJournalEntryAsync(billId);
+            return entry == null ? null : _mapper.Map<JournalEntryViewModel>(entry);
         }
     }
 }

@@ -42,7 +42,12 @@
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="Unit" class="form-label">@L["Unit"]</label>
-                                <input asp-for="Unit" class="form-control" />
+                                <select asp-for="Unit" class="form-select">
+                                    @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.ProductUnit>())
+                                    {
+                                        <option value="@item.Value">@L[item.Text]</option>
+                                    }
+                                </select>
                                 <span asp-validation-for="Unit" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
