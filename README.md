@@ -1,5 +1,7 @@
 # TradeERP
 
+![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet) ![EF Core](https://img.shields.io/badge/EF%20Core-8-512BD4) ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoftsqlserver&logoColor=white)
+
 A trading & distribution ERP for small and mid-sized wholesalers and distributors, built with **ASP.NET Core 8 MVC**.
 
 ## What problem does it solve?
@@ -79,3 +81,8 @@ Each module (Employee, Product, BillMaster, etc.) follows the same layering: a t
 ```bash
 dotnet ef migrations add <MigrationName> --project TradeERP.DAL --startup-project TradeERP.PL
 ```
+
+## Author
+
+**Ahmed Ayman Abdel Halim** — Backend .NET Developer
+[LinkedIn](https://linkedin.com/in/ahmedhalimm) · [GitHub](https://github.com/AhmeddAymannHalim) · ahmeddhalimm@outlook.com
