@@ -125,6 +125,30 @@ namespace TradeERP.DAL.Repositories.Definitions
             }
         }
 
+        public override async Task<ResultMessage> UpdateAsync(BillMaster entity)
+        {
+            var existing = await _context.Set<BillMaster>().AsNoTracking().FirstOrDefaultAsync(b => b.Id == entity.Id);
+            if (existing == null)
+                return new ResultMessage { Success = false, Message = "RecordNotFound" };
+
+            if (existing.IsPosted)
+                return new ResultMessage { Success = false, Message = "BillAlreadyPosted" };
+
+            return await base.UpdateAsync(entity);
+        }
+
+        public override async Task<ResultMessage> DeleteAsync(int id)
+        {
+            var existing = await _context.Set<BillMaster>().AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+            if (existing == null)
+                return new ResultMessage { Success = false, Message = "RecordNotFound" };
+
+            if (existing.IsPosted)
+                return new ResultMessage { Success = false, Message = "BillAlreadyPosted" };
+
+            return await base.DeleteAsync(id);
+        }
+
         public async Task<PaginatedResult<BillMaster>> GetPagedAsync(int pageNo, string? searchString)
         {
             var query = _context.Set<BillMaster>().AsNoTracking()

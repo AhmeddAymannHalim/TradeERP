@@ -19,7 +19,7 @@ namespace TradeERP.DAL.Repositories.Commons
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<ResultMessage> AddAsync(T entity)
+        public virtual async Task<ResultMessage> AddAsync(T entity)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace TradeERP.DAL.Repositories.Commons
             }
         }
 
-        public async Task<ResultMessage> UpdateAsync(T entity)
+        public virtual async Task<ResultMessage> UpdateAsync(T entity)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace TradeERP.DAL.Repositories.Commons
             }
         }
 
-        public async Task<ResultMessage> DeleteAsync(int id)
+        public virtual async Task<ResultMessage> DeleteAsync(int id)
         {
             var entity = await GetByIdAsync(id);
             if (entity == null)

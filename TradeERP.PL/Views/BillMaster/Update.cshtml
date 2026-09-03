@@ -15,72 +15,74 @@
                         <h4 class="fw-bold m-0">@L["EditBillMaster"]</h4>
                     </div>
                     <div class="card-body">
-                        <div class="row g-3 align-items-center justify-content-center">
-                            <div class="col-md-4">
-                                <label asp-for="Code" class="form-label"></label>
-                                <input asp-for="Code" class="form-control" />
-                                <span asp-validation-for="Code" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4">
-                                <label asp-for="BillDate" class="form-label">@L["BillDate"]</label>
-                                <input asp-for="BillDate" type="date" class="form-control" />
-                                <span asp-validation-for="BillDate" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4">
-                                <label asp-for="BillType" class="form-label">@L["BillType"]</label>
-                                <select asp-for="BillType" class="form-select" disabled="@Model.IsPosted">
-                                    @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.BillType>())
+                        @if (Model.IsPosted)
+                        {
+                            <div class="alert alert-warning">@L["BillAlreadyPosted"]</div>
+                        }
+                        <fieldset disabled="@Model.IsPosted">
+                            <div class="row g-3 align-items-center justify-content-center">
+                                <div class="col-md-4">
+                                    <label asp-for="Code" class="form-label"></label>
+                                    <input asp-for="Code" class="form-control" />
+                                    <span asp-validation-for="Code" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="BillDate" class="form-label">@L["BillDate"]</label>
+                                    <input asp-for="BillDate" type="date" class="form-control" />
+                                    <span asp-validation-for="BillDate" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="BillType" class="form-label">@L["BillType"]</label>
+                                    <select asp-for="BillType" class="form-select">
+                                        @foreach (var item in Html.GetEnumSelectList<TradeERP.Shared.Enums.BillType>())
+                                        {
+                                            <option value="@item.Value">@L[item.Text]</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="BillType" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="CustomerId" class="form-label">@L["Customer"]</label>
+                                    <select asp-for="CustomerId" class="form-select">
+                                        <option value="">@L["Choose"]</option>
+                                        @foreach (var item in Model.Customers)
+                                        {
+                                            <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="SupplierId" class="form-label">@L["Supplier"]</label>
+                                    <select asp-for="SupplierId" class="form-select">
+                                        <option value="">@L["Choose"]</option>
+                                        @foreach (var item in Model.Suppliers)
+                                        {
+                                            <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Amount" class="form-label">@L["Amount"]</label>
+                                    <input asp-for="Amount" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label d-block">@L["PostingStatus"]</label>
+                                    @if (Model.IsPosted)
                                     {
-                                        <option value="@item.Value">@L[item.Text]</option>
+                                        <span class="badge bg-success">@L["Posted"]</span>
                                     }
-                                </select>
-                                @if (Model.IsPosted)
-                                {
-                                    <input type="hidden" asp-for="BillType" />
-                                }
-                                <span asp-validation-for="BillType" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4">
-                                <label asp-for="CustomerId" class="form-label">@L["Customer"]</label>
-                                <select asp-for="CustomerId" class="form-select">
-                                    <option value="">@L["Choose"]</option>
-                                    @foreach (var item in Model.Customers)
+                                    else
                                     {
-                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
+                                        <span class="badge bg-secondary">@L["Draft"]</span>
                                     }
-                                </select>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label asp-for="SupplierId" class="form-label">@L["Supplier"]</label>
-                                <select asp-for="SupplierId" class="form-select">
-                                    <option value="">@L["Choose"]</option>
-                                    @foreach (var item in Model.Suppliers)
-                                    {
-                                        <option value="@item.Id">@(isArabicCulture ? item.ArName : item.EnName)</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label asp-for="Amount" class="form-label">@L["Amount"]</label>
-                                <input asp-for="Amount" class="form-control" readonly />
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label d-block">@L["PostingStatus"]</label>
-                                @if (Model.IsPosted)
-                                {
-                                    <span class="badge bg-success">@L["Posted"]</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">@L["Draft"]</span>
-                                }
-                            </div>
-                        </div>
+                        </fieldset>
                     </div>
                     <div class="card-footer d-flex justify-content-center gap-2">
-                        <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
                         @if (!Model.IsPosted)
                         {
+                            <button type="submit" class="btn btn-primary px-5">@L["Save"]</button>
                             <a href="javascript:void(0)" onclick="postBill(@Model.Id)" class="btn btn-success px-5">@L["Post"]</a>
                         }
                         <a asp-action="Index" class="btn btn-outline-secondary px-5">@L["Cancel"]</a>

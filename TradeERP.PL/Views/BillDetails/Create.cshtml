@@ -44,18 +44,17 @@
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="Quantity" class="form-label">@L["Quantity"]</label>
-                                <input asp-for="Quantity" class="form-control" />
+                                <input asp-for="Quantity" id="Quantity" class="form-control" />
                                 <span asp-validation-for="Quantity" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="UnitPrice" class="form-label">@L["UnitPrice"]</label>
-                                <input asp-for="UnitPrice" class="form-control" />
+                                <input asp-for="UnitPrice" id="UnitPrice" class="form-control" />
                                 <span asp-validation-for="UnitPrice" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="LineTotal" class="form-label">@L["LineTotal"]</label>
-                                <input asp-for="LineTotal" class="form-control" />
-                                <span asp-validation-for="LineTotal" class="text-danger"></span>
+                                <input asp-for="LineTotal" id="LineTotal" class="form-control" readonly />
                             </div>
                         </div>
                     </div>
@@ -73,4 +72,14 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        function calculateLineTotal() {
+            var qty = parseFloat(document.getElementById('Quantity').value) || 0;
+            var price = parseFloat(document.getElementById('UnitPrice').value) || 0;
+            document.getElementById('LineTotal').value = (qty * price).toFixed(2);
+        }
+        document.getElementById('Quantity').addEventListener('input', calculateLineTotal);
+        document.getElementById('UnitPrice').addEventListener('input', calculateLineTotal);
+        calculateLineTotal();
+    </script>
 }
