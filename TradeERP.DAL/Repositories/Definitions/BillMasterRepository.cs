@@ -108,6 +108,7 @@ namespace TradeERP.DAL.Repositories.Definitions
                 // now that concurrent posts for the same product(s) are locked out.
                 var stockMoves = new List<(int ProductId, decimal Quantity, decimal UnitCost)>();
                 var pendingBalance = new Dictionary<int, decimal>();
+                var positions = await GetStockPositionsAsync(bill.BillDetails.Select(d => d.ProductId));
 
                 foreach (var line in bill.BillDetails)
                 {
@@ -118,15 +119,14 @@ namespace TradeERP.DAL.Repositories.Definitions
                     }
                     else
                     {
-                        var (_, avgCost) = await GetStockPositionAsync(line.ProductId);
-                        unitCost = avgCost;
+                        unitCost = positions[line.ProductId].AverageCost;
                     }
 
                     if (stockMovement == StockMovementType.Out)
                     {
                         if (!pendingBalance.TryGetValue(line.ProductId, out var available))
                         {
-                            (available, _) = await GetStockPositionAsync(line.ProductId);
+                            available = positions[line.ProductId].Quantity;
                         }
 
                         if (available < line.Quantity)
@@ -199,29 +199,40 @@ namespace TradeERP.DAL.Repositories.Definitions
             }
         }
 
-        /// <summary>
-        /// Current on-hand quantity and weighted-average cost for a product, derived from
-        /// StockLedger (remaining value / remaining qty = SUM(In) - SUM(Out at the cost each
-        /// Out was recorded at), never a stored running balance.
-        /// </summary>
-        private async Task<(decimal Quantity, decimal AverageCost)> GetStockPositionAsync(int productId)
+        private async Task<Dictionary<int, (decimal Quantity, decimal AverageCost)>> GetStockPositionsAsync(IEnumerable<int> productIds)
         {
-            var moves = await _context.Set<StockLedger>()
+            var ids = productIds.Distinct().ToList();
+
+            var aggregates = await _context.Set<StockLedger>()
                 .AsNoTracking()
-                .Where(s => s.ProductId == productId)
-                .Select(s => new { s.MovementType, s.Quantity, s.UnitCost })
-                .ToListAsync();
+                .Where(s => ids.Contains(s.ProductId))
+                .GroupBy(s => s.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    InQty = g.Sum(s => s.MovementType == StockMovementType.In ? s.Quantity : 0),
+                    InValue = g.Sum(s => s.MovementType == StockMovementType.In ? s.Quantity * s.UnitCost : 0),
+                    OutQty = g.Sum(s => s.MovementType == StockMovementType.Out ? s.Quantity : 0),
+                    OutValue = g.Sum(s => s.MovementType == StockMovementType.Out ? s.Quantity * s.UnitCost : 0)
+                })
+                .ToDictionaryAsync(g => g.ProductId);
 
-            var inQty = moves.Where(m => m.MovementType == StockMovementType.In).Sum(m => m.Quantity);
-            var inValue = moves.Where(m => m.MovementType == StockMovementType.In).Sum(m => m.Quantity * m.UnitCost);
-            var outQty = moves.Where(m => m.MovementType == StockMovementType.Out).Sum(m => m.Quantity);
-            var outValue = moves.Where(m => m.MovementType == StockMovementType.Out).Sum(m => m.Quantity * m.UnitCost);
+            var positions = new Dictionary<int, (decimal Quantity, decimal AverageCost)>();
+            foreach (var id in ids)
+            {
+                if (!aggregates.TryGetValue(id, out var a))
+                {
+                    positions[id] = (0, 0);
+                    continue;
+                }
 
-            var remainingQty = inQty - outQty;
-            var remainingValue = inValue - outValue;
-            var averageCost = remainingQty > 0 ? remainingValue / remainingQty : 0;
+                var remainingQty = a.InQty - a.OutQty;
+                var remainingValue = a.InValue - a.OutValue;
+                var averageCost = remainingQty > 0 ? remainingValue / remainingQty : 0;
+                positions[id] = (remainingQty, averageCost);
+            }
 
-            return (remainingQty, averageCost);
+            return positions;
         }
 
         public async Task<ResultMessage> AddWithDetailsAsync(BillMaster bill, List<BillDetails> lines)
