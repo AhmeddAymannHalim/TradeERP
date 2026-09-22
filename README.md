@@ -4,6 +4,15 @@
 
 A trading & distribution ERP for small and mid-sized wholesalers and distributors, built with **ASP.NET Core 8 MVC**.
 
+## Live demo
+
+**[TradeERP Live Demo](https://revolutionary-kerry-outdoor-nut.trycloudflare.com)**
+
+- **Email:** `admin@traderp.local`
+- **Password:** `Admin@123`
+
+> This points at a personal machine, not a hosted server — it's only online while that machine is running, and the URL can change if the tunnel restarts. If the link is down, use the [Getting started](#getting-started) steps below to run it locally instead.
+
 ## What problem does it solve?
 
 A trading business needs to track products and stock, buy from suppliers, sell to customers, and keep its books straight — usually across a spreadsheet for inventory, a notebook for accounts, and a separate invoicing tool. Numbers drift apart, stock counts go stale, and nobody can answer "are we actually profitable this month?" without manual reconciliation.
