@@ -21,11 +21,11 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Code"]</th>
-                        <th>@L["BillDate"]</th>
-                        <th>@L["BillType"]</th>
-                        <th>@L["Amount"]</th>
+                        <th class="d-none d-md-table-cell">@L["BillDate"]</th>
+                        <th class="d-none d-lg-table-cell">@L["BillType"]</th>
+                        <th class="d-none d-md-table-cell">@L["Amount"]</th>
                         <th>@L["PostingStatus"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
@@ -37,11 +37,11 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Code</td>
-                                <td>@item.BillDate.ToShortDateString()</td>
-                                <td>@L[item.BillType.ToString()]</td>
-                                <td>@item.Amount</td>
+                                <td class="d-none d-md-table-cell">@item.BillDate.ToShortDateString()</td>
+                                <td class="d-none d-lg-table-cell">@L[item.BillType.ToString()]</td>
+                                <td class="d-none d-md-table-cell">@item.Amount</td>
                                 <td>
                                     @if (item.IsPosted)
                                     {

@@ -22,9 +22,9 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
-                        <th>@L["Code"]</th>
-                        <th>@L["JournalEntry"]</th>
+                        <th class="d-none d-lg-table-cell">#</th>
+                        <th class="d-none d-md-table-cell">@L["Code"]</th>
+                        <th class="d-none d-md-table-cell">@L["JournalEntry"]</th>
                         <th>@L["Account"]</th>
                         <th>@L["DebitAmount"]</th>
                         <th>@L["CreditAmount"]</th>
@@ -37,9 +37,9 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
-                                <td>@item.Code</td>
-                                <td>@item.EntryMasterCode</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
+                                <td class="d-none d-md-table-cell">@item.Code</td>
+                                <td class="d-none d-md-table-cell">@item.EntryMasterCode</td>
                                 <td>@(isArabicCulture ? item.LedgerAccountArName : item.LedgerAccountEnName)</td>
                                 <td>@item.DebitAmount</td>
                                 <td>@item.CreditAmount</td>

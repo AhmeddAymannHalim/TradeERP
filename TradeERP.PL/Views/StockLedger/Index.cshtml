@@ -20,12 +20,12 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Product"]</th>
-                        <th>@L["MovementDate"]</th>
+                        <th class="d-none d-md-table-cell">@L["MovementDate"]</th>
                         <th>@L["MovementType"]</th>
-                        <th>@L["Quantity"]</th>
-                        <th>@L["UnitCost"]</th>
+                        <th class="d-none d-md-table-cell">@L["Quantity"]</th>
+                        <th class="d-none d-lg-table-cell">@L["UnitCost"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,9 +35,9 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@(isArabicCulture ? item.ProductArName : item.ProductEnName)</td>
-                                <td>@item.MovementDate.ToShortDateString()</td>
+                                <td class="d-none d-md-table-cell">@item.MovementDate.ToShortDateString()</td>
                                 <td>
                                     @if (item.MovementType == TradeERP.Shared.Enums.StockMovementType.In)
                                     {
@@ -48,8 +48,8 @@
                                         <span class="badge bg-danger">@L["Out"]</span>
                                     }
                                 </td>
-                                <td>@item.Quantity</td>
-                                <td>@item.UnitCost</td>
+                                <td class="d-none d-md-table-cell">@item.Quantity</td>
+                                <td class="d-none d-lg-table-cell">@item.UnitCost</td>
                             </tr>
                             counter++;
                         }

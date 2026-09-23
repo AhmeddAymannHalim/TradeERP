@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "tradeerp",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "TradeERP.PL", "--urls", "http://localhost:5230"],
+      "port": 5230
+    }
+  ]
+}

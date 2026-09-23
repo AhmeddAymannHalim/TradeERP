@@ -13,8 +13,8 @@
                 <thead class="table-light border-light">
                     <tr>
                         <th>@L["Product"]</th>
-                        <th>@L["Quantity"]</th>
-                        <th>@L["UnitCost"]</th>
+                        <th class="d-none d-md-table-cell">@L["Quantity"]</th>
+                        <th class="d-none d-lg-table-cell">@L["UnitCost"]</th>
                         <th>@L["Amount"]</th>
                     </tr>
                 </thead>
@@ -25,8 +25,8 @@
                         {
                             <tr class="align-middle">
                                 <td>@(isArabicCulture ? row.ProductArName : row.ProductEnName)</td>
-                                <td>@row.Quantity.ToString("N3")</td>
-                                <td>@row.AverageCost.ToString("N2")</td>
+                                <td class="d-none d-md-table-cell">@row.Quantity.ToString("N3")</td>
+                                <td class="d-none d-lg-table-cell">@row.AverageCost.ToString("N2")</td>
                                 <td>@row.TotalValue.ToString("N2")</td>
                             </tr>
                         }

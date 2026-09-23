@@ -21,12 +21,12 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Code"]</th>
-                        <th>@L["ArabicName"]</th>
+                        <th class="d-none d-md-table-cell">@L["ArabicName"]</th>
                         <th>@L["EnglishName"]</th>
-                        <th>@L["HasShiftNight"]</th>
-                        <th>@L["DepartmentType"]</th>
+                        <th class="d-none d-lg-table-cell">@L["HasShiftNight"]</th>
+                        <th class="d-none d-md-table-cell">@L["DepartmentType"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
                 </thead>
@@ -37,11 +37,11 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Code</td>
-                                <td>@item.ArName</td>
+                                <td class="d-none d-md-table-cell">@item.ArName</td>
                                 <td>@item.EnName</td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     @if (item.HasShiftNight)
                                     {
                                         <i class="bi bi-check-circle-fill text-success"></i>
@@ -51,7 +51,7 @@
                                         <i class="bi bi-x-circle-fill text-danger"></i>
                                     }
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     @if (item.ParentDepartmentId == null)
                                     {
                                         <span class="badge bg-primary-subtle text-primary-emphasis">@L["Parent"]</span>

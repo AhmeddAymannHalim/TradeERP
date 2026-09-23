@@ -21,11 +21,11 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Code"]</th>
-                        <th>@L["VoucherDate"]</th>
-                        <th>@L["VoucherType"]</th>
-                        <th>@L["Amount"]</th>
+                        <th class="d-none d-md-table-cell">@L["VoucherDate"]</th>
+                        <th class="d-none d-lg-table-cell">@L["VoucherType"]</th>
+                        <th class="d-none d-md-table-cell">@L["Amount"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
                 </thead>
@@ -36,11 +36,11 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Code</td>
-                                <td>@item.VoucherDate.ToShortDateString()</td>
-                                <td>@L[item.VoucherType.ToString()]</td>
-                                <td>@item.Amount</td>
+                                <td class="d-none d-md-table-cell">@item.VoucherDate.ToShortDateString()</td>
+                                <td class="d-none d-lg-table-cell">@L[item.VoucherType.ToString()]</td>
+                                <td class="d-none d-md-table-cell">@item.Amount</td>
                                 <td>
                                     <a href="javascript:void(0)" onclick="Delete('/VoucherMaster/Delete/@item.Id')" class="link-danger"><i class="bi bi-trash"></i></a>
                                 </td>

@@ -23,12 +23,12 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Code"]</th>
-                        <th>@L["Bill"]</th>
+                        <th class="d-none d-md-table-cell">@L["Bill"]</th>
                         <th>@L["Product"]</th>
-                        <th>@L["Quantity"]</th>
-                        <th>@L["Price"]</th>
+                        <th class="d-none d-md-table-cell">@L["Quantity"]</th>
+                        <th class="d-none d-lg-table-cell">@L["Price"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
                 </thead>
@@ -39,12 +39,12 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Code</td>
-                                <td>@item.BillMasterCode</td>
+                                <td class="d-none d-md-table-cell">@item.BillMasterCode</td>
                                 <td>@(isArabicCulture ? item.ProductArName : item.ProductEnName)</td>
-                                <td>@item.Quantity</td>
-                                <td>@item.UnitPrice</td>
+                                <td class="d-none d-md-table-cell">@item.Quantity</td>
+                                <td class="d-none d-lg-table-cell">@item.UnitPrice</td>
                                 <td>
                                     <a asp-action="Update" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
                                     <a href="javascript:void(0)" onclick="Delete('/BillDetails/Delete/@item.Id')" class="link-danger ms-2"><i class="bi bi-trash"></i></a>

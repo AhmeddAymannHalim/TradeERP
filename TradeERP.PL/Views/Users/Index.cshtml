@@ -23,9 +23,9 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Email"]</th>
-                        <th>@L["Roles"]</th>
+                        <th class="d-none d-md-table-cell">@L["Roles"]</th>
                         <th>@L["Status"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
@@ -37,9 +37,9 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Email</td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     @foreach (var role in item.Roles)
                                     {
                                         <span class="badge bg-primary-subtle text-primary-emphasis">@role</span>

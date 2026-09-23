@@ -39,11 +39,11 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>@L["EntryDate"]</th>
+                        <th class="d-none d-md-table-cell">@L["EntryDate"]</th>
                         <th>@L["Description"]</th>
                         <th>@L["DebitAmount"]</th>
                         <th>@L["CreditAmount"]</th>
-                        <th>@L["RunningBalance"]</th>
+                        <th class="d-none d-lg-table-cell">@L["RunningBalance"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,11 +52,11 @@
                         foreach (var row in Model)
                         {
                             <tr class="align-middle">
-                                <td>@row.EntryDate.ToShortDateString()</td>
+                                <td class="d-none d-md-table-cell">@row.EntryDate.ToShortDateString()</td>
                                 <td>@row.Description</td>
                                 <td>@row.DebitAmount.ToString("N2")</td>
                                 <td>@row.CreditAmount.ToString("N2")</td>
-                                <td>@row.RunningBalance.ToString("N2")</td>
+                                <td class="d-none d-lg-table-cell">@row.RunningBalance.ToString("N2")</td>
                             </tr>
                         }
                     }

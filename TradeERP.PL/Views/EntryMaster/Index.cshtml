@@ -21,11 +21,11 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Code"]</th>
-                        <th>@L["EntryDate"]</th>
-                        <th>@L["Description"]</th>
-                        <th>@L["EntryType"]</th>
+                        <th class="d-none d-md-table-cell">@L["EntryDate"]</th>
+                        <th class="d-none d-md-table-cell">@L["Description"]</th>
+                        <th class="d-none d-lg-table-cell">@L["EntryType"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
                 </thead>
@@ -36,11 +36,11 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Code</td>
-                                <td>@item.EntryDate.ToShortDateString()</td>
-                                <td>@item.Description</td>
-                                <td>@L[item.EntryType.ToString()]</td>
+                                <td class="d-none d-md-table-cell">@item.EntryDate.ToShortDateString()</td>
+                                <td class="d-none d-md-table-cell">@item.Description</td>
+                                <td class="d-none d-lg-table-cell">@L[item.EntryType.ToString()]</td>
                                 <td>
                                     <a asp-action="Update" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
                                     @if (item.EntryType == TradeERP.Shared.Enums.EntryType.Manual)

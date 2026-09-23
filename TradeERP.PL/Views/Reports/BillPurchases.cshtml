@@ -13,9 +13,9 @@
                     <tr>
                         <th>@L["Supplier"]</th>
                         <th>@L["Amount"]</th>
-                        <th>@L["MovementDate"]</th>
-                        <th>@L["BillType"]</th>
-                        <th>@L["IsPosted"]</th>
+                        <th class="d-none d-md-table-cell">@L["MovementDate"]</th>
+                        <th class="d-none d-lg-table-cell">@L["BillType"]</th>
+                        <th class="d-none d-md-table-cell">@L["IsPosted"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,15 +26,15 @@
                             <tr class="align-middle">
                                 <td>@(isArabicCulture ? @row.SupplierArName : @row.SupplierEnName) </td>
                                 <td>@row.Amount</td>
-                                <td>@row.BillDate</td>
-                                <td>@L[row.BillType.ToString()]</td>
+                                <td class="d-none d-md-table-cell">@row.BillDate</td>
+                                <td class="d-none d-lg-table-cell">@L[row.BillType.ToString()]</td>
                                 @if (row.IsPosted)
                                 {
-                                    <td class="text-success">@L["Yes"]</td>
+                                    <td class="text-success d-none d-md-table-cell">@L["Yes"]</td>
                                 }
                                 else
                                 {
-                                    <td class="text-danger">@L["No"]</td>
+                                    <td class="text-danger d-none d-md-table-cell">@L["No"]</td>
                                 }
                             </tr>
                         }

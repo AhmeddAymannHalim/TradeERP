@@ -21,12 +21,12 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Code"]</th>
-                        <th>@L["ArabicName"]</th>
+                        <th class="d-none d-md-table-cell">@L["ArabicName"]</th>
                         <th>@L["EnglishName"]</th>
-                        <th>@L["Unit"]</th>
-                        <th>@L["Price"]</th>
+                        <th class="d-none d-lg-table-cell">@L["Unit"]</th>
+                        <th class="d-none d-md-table-cell">@L["Price"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
                 </thead>
@@ -37,12 +37,12 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Code</td>
-                                <td>@item.ArName</td>
+                                <td class="d-none d-md-table-cell">@item.ArName</td>
                                 <td>@item.EnName</td>
-                                <td>@L[item.Unit.ToString()]</td>
-                                <td>@item.Price</td>
+                                <td class="d-none d-lg-table-cell">@L[item.Unit.ToString()]</td>
+                                <td class="d-none d-md-table-cell">@item.Price</td>
                                 <td>
                                     <a asp-action="Update" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
                                     <a href="javascript:void(0)" onclick="Delete('/Product/Delete/@item.Id')" class="link-danger ms-2"><i class="bi bi-trash"></i></a>

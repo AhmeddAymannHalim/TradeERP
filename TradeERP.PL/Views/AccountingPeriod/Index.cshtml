@@ -21,10 +21,10 @@
             <table class="table mb-0 text-nowrap table-hover">
                 <thead class="table-light border-light">
                     <tr>
-                        <th>#</th>
+                        <th class="d-none d-lg-table-cell">#</th>
                         <th>@L["Name"]</th>
-                        <th>@L["StartDate"]</th>
-                        <th>@L["EndDate"]</th>
+                        <th class="d-none d-md-table-cell">@L["StartDate"]</th>
+                        <th class="d-none d-lg-table-cell">@L["EndDate"]</th>
                         <th>@L["PostingStatus"]</th>
                         <th>@L["Actions"]</th>
                     </tr>
@@ -36,10 +36,10 @@
                         foreach (var item in Model.Data)
                         {
                             <tr class="align-middle">
-                                <td>@counter</td>
+                                <td class="d-none d-lg-table-cell">@counter</td>
                                 <td>@item.Name</td>
-                                <td>@item.StartDate.ToShortDateString()</td>
-                                <td>@item.EndDate.ToShortDateString()</td>
+                                <td class="d-none d-md-table-cell">@item.StartDate.ToShortDateString()</td>
+                                <td class="d-none d-lg-table-cell">@item.EndDate.ToShortDateString()</td>
                                 <td>
                                     @if (item.IsClosed)
                                     {
